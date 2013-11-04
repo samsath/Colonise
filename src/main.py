@@ -4,18 +4,21 @@ This will be the main program where the game will run from.
 import sys
 import pygame
 
+
+SIZE = (400,400)
+colour = pygame.color.THECOLORS
+
 def game():
     '''
     Main game setup
     '''
-    SCREEN_WIDTH,SCREEN_HEIGHT = 400,400
+    
     
     pygame.init()
-    
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0,32)
-    
+    screen = pygame.display.set_mode((SIZE), 0,32)
+    screen.fill(colour["darkgreen"])
     clock = pygame.time.Clock()
-    
+    pygame.display.flip()
     
     '''
     Main loop
