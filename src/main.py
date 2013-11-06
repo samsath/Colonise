@@ -3,7 +3,8 @@ This will be the main program where the game will run from.
 '''
 import sys
 import pygame
-
+from terrain import colony
+from ant import ant
 
 SIZE = (400,400)
 colour = pygame.color.THECOLORS
