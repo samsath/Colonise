@@ -1,6 +1,7 @@
 '''
 This will be the main program where the game will run from.
 '''
+#lets see now
 import sys
 import pygame
 from terrain import colony
