@@ -19,6 +19,8 @@ window = pygame.display.set_mode(SIZE)
 window.fill(pygame.color.THECOLORS["black"])
 
 pygame.display.flip()
+ant_list = pygame.sprite.Group()
+
 
 while True:
     pygame.display.update()
