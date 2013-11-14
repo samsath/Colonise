@@ -9,6 +9,7 @@ from math import atan2, degrees, pi, hypot
 
 SIZE=(600,600)
 
+
 class ant(pygame.sprite.Sprite):
     orbit = 30
     def __init__(self,pos,vel,owner):
@@ -66,6 +67,10 @@ class ant(pygame.sprite.Sprite):
                 self.vel = [0,-1]
             elif posangle == 270:
                 self.vel = [-1,0] 
+        else:
+            # this will be when the particle is orbiting
+           # not sure what to do here but owell
+           pass
         
         self.show(pygame.color.THECOLORS["black"])
         newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
@@ -83,10 +88,12 @@ pygame.display.flip()
 
 
 while True:
+    pygame.time.wait(25) # this adds a 50ms delay to everything
     ants.update()
     pygame.display.update()
     event = pygame.event.poll()
-     
+    
+    
     if event.type == pygame.QUIT:
         break
     if event.type == pygame.MOUSEBUTTONDOWN:
