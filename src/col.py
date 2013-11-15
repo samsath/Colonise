@@ -1,5 +1,8 @@
+from __future__ import division
 import pygame
-from math import atan2, degrees, pi, hypot
+from random import randrange
+
+#from math import atan2, degrees, pi, hypot
 
 SIZE=(600,600)
 
@@ -8,33 +11,48 @@ colour = {"0":pygame.color.THECOLORS["white"],
           "1":pygame.color.THECOLORS["red"],
           "2":pygame.color.THECOLORS["blue"],
           "bg":pygame.color.THECOLORS["black"],
-          "ht":pygame.color.THECOLORS["grey"]
+          "ht":pygame.color.THECOLORS["grey"],
+          "h1":pygame.color.THECOLORS["green"],
+          "h2":pygame.color.THECOLORS["red"]
           } # change this bit to images maybe
 
         
 
-class col(Sprite):
+class collony():
     SIZE = 20
     def __init__(self,pos,owner):
         self.pos = pos
         self.owner = owner
         self.health = 100 # max 100
         self.inhab = []
-        self.show(owner)
+        self.show(self.owner)
         
     def show(self, owner):
-        pygame.draw.circle(window,colour[str(owner)])
+        # displays the colony on the map
+        pygame.draw.circle(window,colour[str(owner)],self.pos,collony.SIZE) 
+        self.healthdis()
+        
         
     def __str__(self):
+        # returns the information about the col to the computer
         return str(self.owner) + "," + str(self.health) + "," + str(len(self.inhab))
-        
-    def newowner(self,owner):
-        self.owner = owner
-        self.show(self.owner)
+
+    def healthcheck(self):
+        if self.health >= 50:
+            return colour["h1"]
+        else:
+            return colour["h2"]
         
     def healthdis(self):
         #displays the health and the inhab of the col
-        pygame.draw.rect(window, colour["ht"], pygame.Rect(col.SIZE,) )
+        num = len(self.inhab)
+        pygame.draw.rect(window, colour["ht"], pygame.Rect(self.pos[0]-collony.SIZE,self.pos[1]+5, (collony.SIZE-4)*2, 10))
+        pygame.draw.rect(window, self.healthcheck(), pygame.Rect(self.pos[0]-collony.SIZE,self.pos[1]+5, int(((collony.SIZE*2)/100)*self.health), 9)) 
+        font = pygame.font.Font(None,30)
+        text_suf = font.render(str(num), 1, colour["ht"])
+        tex_pos = (self.pos[0]-collony.SIZE/4,self.pos[1]-collony.SIZE)
+        window.blit(text_suf,tex_pos)
+        
         
     def update(self,time_passed):
         # create new ants and add to list
@@ -54,12 +72,25 @@ class col(Sprite):
             self.health -= value
         
         self.healthdis()
+        if self.health == 0:
+            self.owner = 0
+            self.health = 100
             
+    def inhabit(self, ant):
+        if self.owner == ant.owner:
+            if self.health < 100:
+                self.health += 1
+            else:
+                self.inhab.append(ant) # this will be the ant I think
+        else:
+            if self.health == 0:
+                self.owner = ant.owner
     
         
 pygame.init()
 window = pygame.display.set_mode(SIZE)
 window.fill(colour["bg"])
+col = collony((randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), 0)
 while True:
     
     pygame.display.update()
