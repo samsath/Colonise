@@ -64,21 +64,7 @@ class colony():
     def mapsc(self,val,org,new):
         return float(((val - org[0]) / (org[1]-org[0])) * (new[1]-new[0]) + new[0])  
       
-    def ang(self,pos1,pos2):
-        '''
-        pos1 = dest
-        pos2 = current
-        up = 90
-        right = 0
-        down = 270
-        left = 180
-        '''
-        rads = atan2(-(pos2[1]-pos1[1]),(pos2[0]-pos1[0]))
-        rads %= 2*pi
-        degs = degrees(rads)
-        
-        #Working all the deges here and just put it as the velocity
-        if degs 
+
         
         
     def mouse_click_event(self,mouspos):
@@ -121,18 +107,13 @@ class colony():
             if self.health == 0:
                 self.owner = ant.owner
                 
-    
-        
-    
-   
-    
-  
+
 class ant(object):
-    def __init__(self,visible,owner,pos,vel):
+    def __init__(self,visible,owner,pos,dest):
         self.vis = visible
         self.owner = owner
         self.pos = pos
-        self.vel = vel
+        self.dest = dest
         
     def show(self):
         if self.vis == True:
@@ -141,13 +122,46 @@ class ant(object):
             trans = list(colour[str(self.owner)])
             trans[3]=0
             pygame.draw.circle(window,trans,self.pos,colony.SIZE) 
+    
+    def ang(self,pos1,pos2):
+        '''
+        pos1 = dest
+        pos2 = current
+        up = 90
+        right = 0
+        down = 270
+        left = 180
+        '''
+        rads = atan2(-(pos2[1]-pos1[1]),(pos2[0]-pos1[0]))
+        rads %= 2*pi
+        degs = degrees(rads)
+        return degs
+    
         
     def update(self):
+        posangle = self.ang(self.dest,self.pos)
+        if posangle > 0 and posangle < 90:
+                self.vel = [-1,1]
+        elif posangle > 90 and posangle < 180:
+            self.vel = [1,1]
+        elif posangle > 180 and posangle < 270:
+            self.vel = [1,-1]
+        elif posangle > 270 and posangle < 360:
+            self.vel = [-1,-1]
+        elif posangle == 0:
+            self.vel = [0,1]
+        elif posangle == 90:
+            self.vel = [1,0]
+        elif posangle == 180:
+            self.vel = [0,-1]
+        elif posangle == 270:
+            self.vel = [-1,0] 
         newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
         self.pos = newpos
         
     def setdest(self,dest):
-        self.vel = dest
+        self.dest = dest
+        self.update()
         
     
 
