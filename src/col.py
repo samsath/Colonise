@@ -25,11 +25,18 @@ class colony():
         self.owner = owner
         self.health = 100 # max 100
         self.inhab = []
-        self.show(self.owner)
         self.sellect = False
+        self.show(self.owner)
+        
         
     def show(self, owner):
         # displays the colony on the map
+       
+        if self.sellect == True:
+            pygame.draw.circle(window,(255, 0, 0, 100),self.pos,int(colony.SIZE*1.5))
+        else:
+            pygame.draw.circle(window,(255, 0, 0, 1),self.pos,int(colony.SIZE*1.5))
+        
         pygame.draw.circle(window,colour[str(owner)],self.pos,colony.SIZE) 
         self.healthdis()
         
@@ -64,9 +71,7 @@ class colony():
     def mapsc(self,val,org,new):
         return float(((val - org[0]) / (org[1]-org[0])) * (new[1]-new[0]) + new[0])  
       
-
-        
-        
+      
     def mouse_click_event(self,mouspos):
         '''
         Will be here when you click on it and then click somewhere else it will send the ants
@@ -79,9 +84,10 @@ class colony():
         
         if self.sellect == True:
             # Make the ant and send it to mouse point
-            for a in self.inhab:
-                a.setdest(self.ang(self.pos,mouspos))
-                a.update()
+            if len(self.inhab) > 0:
+                for a in self.inhab:
+                    a.setdest(mouspos)
+                    a.update()
             
             
         
