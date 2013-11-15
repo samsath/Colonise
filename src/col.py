@@ -172,15 +172,30 @@ class ant(object):
     
 
 pygame.init()
+ant_tick = 0
+col_tick = 0
 window = pygame.display.set_mode(SIZE)
 window.fill(colour["bg"])
 col = colony((randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), 0)
+clock = pygame.time.Clock()
 while True:
+
     
     pygame.display.update()
     event = pygame.event.poll()
     
-    
+    clock.tick()
+    elapsed = clock.get_time()
+
+    ant_tick += elapsed
+    col_tick += elapsed
+    if ant_tick > 25:
+        print 'AASTNNNNNTTATATA'
+        ant_tick = 0
+    if col_tick > 1000:
+        print 'CCOCOCCLLOONNNNYYYY'
+        col_tick = 0    
+        
     if event.type == pygame.QUIT:
         break
     if event.type == pygame.MOUSEBUTTONDOWN:
