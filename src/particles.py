@@ -69,8 +69,8 @@ class ant(pygame.sprite.Sprite):
                 self.vel = [-1,0] 
         else:
             # this will be when the particle is orbiting
-           # not sure what to do here but owell
-           pass
+            # not sure what to do here but owell
+            pass
         
         self.show(pygame.color.THECOLORS["black"])
         newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
