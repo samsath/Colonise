@@ -5,6 +5,7 @@ need to add the orbit
 
 import pygame
 import time
+import math
 from math import atan2, degrees, pi, hypot
 
 SIZE=(600,600)
@@ -46,11 +47,20 @@ class ant(pygame.sprite.Sprite):
         #use math.hypot(x,y) this will get the distance between origin and dest
         self.dest = loc
         self.update()
-        
+     
+     
+    def ang2(self,pos1,pos2):
+        dist = [pos1[0] - pos2[0], pos1[1] - pos2[1]]
+        norm = math.sqrt(dist[0] ** 2 + dist[1] ** 2 )
+        return [dist[0]/norm, dist[1]/norm]
+   
     def update(self):
         # this works out the distance from the dest then if closer will orbit else move towards
         if hypot((self.pos[0]-self.dest[0]),(self.pos[1]-self.dest[1])) > ant.orbit:
-            posangle = self.ang(self.dest,self.pos)
+            self.vel = self.ang2(self.dest,self.pos)
+            #posangle = self.ang(self.dest,self.pos)
+            '''
+            old stuff
             if posangle > 0 and posangle < 90:
                 self.vel = [-1,1]
             elif posangle > 90 and posangle < 180:
@@ -67,13 +77,14 @@ class ant(pygame.sprite.Sprite):
                 self.vel = [0,-1]
             elif posangle == 270:
                 self.vel = [-1,0] 
+            '''
         else:
             # this will be when the particle is orbiting
             # not sure what to do here but owell
             pass
         
         self.show(pygame.color.THECOLORS["black"])
-        newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
+        newpos = [int(self.pos[0]+self.vel[0]),int(self.pos[1]+self.vel[1])]
         self.pos = newpos
         self.show(pygame.color.THECOLORS["white"])
             
@@ -88,7 +99,7 @@ pygame.display.flip()
 
 
 while True:
-    pygame.time.wait(25) # this adds a 50ms delay to everything
+    #pygame.time.wait(25) # this adds a 50ms delay to everything
     ants.update()
     pygame.display.update()
     event = pygame.event.poll()
