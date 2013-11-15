@@ -2,7 +2,7 @@ from __future__ import division
 import pygame
 from random import randrange
 
-#from math import atan2, degrees, pi, hypot
+from math import atan2, degrees, pi, hypot
 
 SIZE=(600,600)
 
@@ -18,7 +18,7 @@ colour = {"0":pygame.color.THECOLORS["white"],
 
         
 
-class collony():
+class colony():
     SIZE = 20
     def __init__(self,pos,owner):
         self.pos = pos
@@ -26,10 +26,11 @@ class collony():
         self.health = 100 # max 100
         self.inhab = []
         self.show(self.owner)
+        self.sellect = False
         
     def show(self, owner):
         # displays the colony on the map
-        pygame.draw.circle(window,colour[str(owner)],self.pos,collony.SIZE) 
+        pygame.draw.circle(window,colour[str(owner)],self.pos,colony.SIZE) 
         self.healthdis()
         
         
@@ -46,11 +47,11 @@ class collony():
     def healthdis(self):
         #displays the health and the inhab of the col
         num = len(self.inhab)
-        pygame.draw.rect(window, colour["ht"], pygame.Rect(self.pos[0]-collony.SIZE,self.pos[1]+5, (collony.SIZE-4)*2, 10))
-        pygame.draw.rect(window, self.healthcheck(), pygame.Rect(self.pos[0]-collony.SIZE,self.pos[1]+5, int(((collony.SIZE*2)/100)*self.health), 9)) 
+        pygame.draw.rect(window, colour["ht"], pygame.Rect(self.pos[0]-colony.SIZE,self.pos[1]+5, (colony.SIZE-4)*2, 10))
+        pygame.draw.rect(window, self.healthcheck(), pygame.Rect(self.pos[0]-colony.SIZE,self.pos[1]+5, int(((colony.SIZE*2)/100)*self.health), 9)) 
         font = pygame.font.Font(None,30)
         text_suf = font.render(str(num), 1, colour["ht"])
-        tex_pos = (self.pos[0]-collony.SIZE/4,self.pos[1]-collony.SIZE)
+        tex_pos = (self.pos[0]-colony.SIZE/4,self.pos[1]-colony.SIZE)
         window.blit(text_suf,tex_pos)
         
         
@@ -59,13 +60,44 @@ class collony():
         if self.owner != 0:
             #make ant
             pass
+      
+    def mapsc(self,val,org,new):
+        return float(((val - org[0]) / (org[1]-org[0])) * (new[1]-new[0]) + new[0])  
+      
+    def ang(self,pos1,pos2):
+        '''
+        pos1 = dest
+        pos2 = current
+        up = 90
+        right = 0
+        down = 270
+        left = 180
+        '''
+        rads = atan2(-(pos2[1]-pos1[1]),(pos2[0]-pos1[0]))
+        rads %= 2*pi
+        degs = degrees(rads)
+        
+        #Working all the deges here and just put it as the velocity
+        if degs 
         
         
-    def mouse_click_event(self,pos):
+    def mouse_click_event(self,mouspos):
         '''
         Will be here when you click on it and then click somewhere else it will send the ants
         '''
-        pass
+        if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE :
+            if self.sellect == True:
+                self.sellect = False
+            else:
+                self.sellect = True
+        
+        if self.sellect == True:
+            # Make the ant and send it to mouse point
+            for a in self.inhab:
+                a.setdest(self.ang(self.pos,mouspos))
+                a.update()
+            
+            
         
     def attacked(self,value):
         #decrease health after destroying the inhab
@@ -88,6 +120,11 @@ class collony():
         else:
             if self.health == 0:
                 self.owner = ant.owner
+                
+    
+        
+    
+   
     
   
 class ant(object):
@@ -103,16 +140,21 @@ class ant(object):
         else:
             trans = list(colour[str(self.owner)])
             trans[3]=0
-            pygame.draw.circle(window,trans,self.pos,collony.SIZE) 
+            pygame.draw.circle(window,trans,self.pos,colony.SIZE) 
         
     def update(self):
         newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
         self.pos = newpos
+        
+    def setdest(self,dest):
+        self.vel = dest
+        
+    
 
 pygame.init()
 window = pygame.display.set_mode(SIZE)
 window.fill(colour["bg"])
-col = collony((randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), 0)
+col = colony((randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), 0)
 while True:
     
     pygame.display.update()
