@@ -56,7 +56,10 @@ class collony():
         
     def update(self,time_passed):
         # create new ants and add to list
-        pass
+        if self.owner != 0:
+            #make ant
+            pass
+        
         
     def mouse_click_event(self,pos):
         '''
@@ -86,7 +89,26 @@ class collony():
             if self.health == 0:
                 self.owner = ant.owner
     
+  
+class ant(object):
+    def __init__(self,visible,owner,pos,vel):
+        self.vis = visible
+        self.owner = owner
+        self.pos = pos
+        self.vel = vel
         
+    def show(self):
+        if self.vis == True:
+            pygame.draw.circle(window,colour[str(self.owner)],self.pos,1) 
+        else:
+            trans = list(colour[str(self.owner)])
+            trans[3]=0
+            pygame.draw.circle(window,trans,self.pos,collony.SIZE) 
+        
+    def update(self):
+        newpos = [self.pos[0]+self.vel[0],self.pos[1]+self.vel[1]]
+        self.pos = newpos
+
 pygame.init()
 window = pygame.display.set_mode(SIZE)
 window.fill(colour["bg"])
