@@ -77,11 +77,11 @@ class colony():
         Will be here when you click on it and then click somewhere else it will send the ants
         '''
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE :
-            if self.sellect == True:
+			print 'in range'
+            '''if self.sellect == True:
                 self.sellect = False
             else:
-                self.sellect = True
-        
+                self.sellect = True'''
         if self.sellect == True:
             # Make the ant and send it to mouse point
             if len(self.inhab) > 0:
@@ -190,15 +190,15 @@ while True:
     ant_tick += elapsed
     col_tick += elapsed
     if ant_tick > 25:
-        print 'AASTNNNNNTTATATA'
+       # print 'AASTNNNNNTTATATA'
         ant_tick = 0
     if col_tick > 1000:
-        print 'CCOCOCCLLOONNNNYYYY'
+       # print 'CCOCOCCLLOONNNNYYYY'
         col_tick = 0    
         
     if event.type == pygame.QUIT:
         break
     if event.type == pygame.MOUSEBUTTONDOWN:
         loc = pygame.mouse.get_pos()
-        
+        col.mouse_click_event(loc)
 pygame.quit()
