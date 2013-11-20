@@ -1,6 +1,6 @@
 from __future__ import division
 import os, sys
-from random import randrange
+from random import randrange, randint
 from math import hypot
 
 import pygame
@@ -14,6 +14,7 @@ SIZE=(600,600)
 colour = {"0":pygame.color.THECOLORS["white"],
           "1":pygame.color.THECOLORS["red"],
           "2":pygame.color.THECOLORS["blue"],
+          "3":pygame.color.THECOLORS["yellow"],
           "bg":pygame.color.THECOLORS["black"],
           "ht":pygame.color.THECOLORS["grey"],
           "h1":pygame.color.THECOLORS["green"],
@@ -29,11 +30,12 @@ def mapload():
 
 class colony(Sprite):
     
-    (SELLECT, UNACTIVE) = range(2)
+
     
     baseimage = {"0":"Colony.png",
-                 "1":"Colony1.png",
-                 "2":"Colony2.png"}
+                 "1":"Colony.png",
+                 "2":"Colony.png",
+                 "3":"Colony.png"}
     SIZE=(20,20)
     
     def __init__(self, screen, pos, owner):
@@ -42,12 +44,11 @@ class colony(Sprite):
         self.pos = pos
         self.owner = str(owner)
         self.health = 100 # max 100
-        self.inhab = ["a1","a2","a3","a4","a5"]
-        self.state = colony.SELLECT
+        self.inhab = []
+        self.state = False
         self.show()
-        
-    def is_sellect(self):
-        return self.state in (colony.SELLECT, colony.UNACTIVE)
+        (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
+   
     
     
     def healthcheck(self):
@@ -62,21 +63,9 @@ class colony(Sprite):
     
     def show(self):
         colimage = pygame.image.load(colony.baseimage[self.owner]).convert_alpha()
-        colSel = pygame.Surface(colony.SIZE,pygame.SRCALPHA)
-        pygame.draw.ellipse(colSel,colour[self.owner],[self.pos,colony.SIZE])
-        #colSel.circle = pygame.draw.circle(self.screen,colour["2"],self.pos,colony.SIZE[0])
-        if self.state == colony.SELLECT:
-            colSel.set_alpha(128)
-            
-        elif self.state == colony.UNACTIVE: #maybe else instead
-            colSel.set_alpha(0)
-        #self.screen.blit(colimage,(self.pos[0]/2,self.pos[1]/2))
-        self.screen.blit(colimage,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
-        self.screen.blit(colSel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))  
         
         #aim is to display the health bar
         ocnum = len(self.inhab) # this is the number of inhabitabts
-        
         healthbg = pygame.Surface((((colony.SIZE[0]-4)*2), 10),pygame.SRCALPHA)
         healthbg.fill(colour["ht"])
         healthbar = pygame.Surface((((((colony.SIZE[0]-5)*2)/100)*self.health), 7),pygame.SRCALPHA)
@@ -86,6 +75,7 @@ class colony(Sprite):
         tex_pos = (self.pos[0]+4,self.pos[1]-11)
         
         #writes to screen
+        self.screen.blit(colimage,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         self.screen.blit(text_suf,tex_pos)
         self.screen.blit(healthbg,(self.pos[0]-6,self.pos[1]+12))
         self.screen.blit(healthbar,((self.pos[0]-5),self.pos[1]+13.5))
@@ -126,15 +116,29 @@ class colony(Sprite):
             else:
                 #create ant
                 pass
-   
+            
+    def draw_select(self):
+        
+        sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
+        if self.state == True:
+            ucolour = list(colour[self.owner])
+            ucolour[3]=255
+            sel.fill(ucolour)
+        if self.state == False:
+            sel.fill((0,122,49,255))
+            
+        self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
+        
     def _mouseClick(self,mouspos):
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0] :
-            
-            if self.state == colony.UNACTIVE:
-                self.state = colony.SELLECT
-            else:
-                self.des = mouspos
-            
+            print str(self.state)
+            if self.owner == 3:
+                if self.state == False:
+                    self.state = True
+                else:
+                    self.state = False
+                    self.des = mouspos
+                self.draw_select()
 
 class ant(Sprite):
     def __init__(self):
@@ -150,7 +154,7 @@ col_tick = 0
 ###### list of all the sprite groups
 colony_list = pygame.sprite.Group()
 ant_list = pygame.sprite.Group()
-all_sprite_list = pygame.sprite.Group()
+#all_sprite_list = pygame.sprite.Group()
 
 #####Screen
 window = pygame.display.set_mode(SIZE)
@@ -159,7 +163,10 @@ window.blit(bg_img,(0,0,600,600))
 
 #####Produce the map
 mapload() ## this will be a funtion to load a file(.csv) and set the colong info to it
-col = colony(window,(randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), 0)
+for i in range(10):
+    col = colony(window,(randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), randint(0,3))
+    colony_list.add(col)
+
 
 clock = pygame.time.Clock()
 while True:
@@ -176,13 +183,19 @@ while True:
     if ant_tick > 25:
         ant_tick = 0
     if col_tick > 1000:
-        col_tick = 0     
-    col.update(col_tick)   
+        col_tick = 0    
+        
+        
+    for c in colony_list: 
+        c .update(col_tick)
+        
+           
     if event.type == pygame.QUIT:
         break
     if event.type == pygame.MOUSEBUTTONDOWN:
         loc = pygame.mouse.get_pos()
-        col._mouseClick(loc)
+        for c in colony_list:
+            c._mouseClick(loc)
 pygame.quit()
     
     
