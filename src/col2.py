@@ -27,6 +27,7 @@ class colony(Sprite):
     SIZE=(40,40)
     
     def __init__(self, screen, c_image, pos, owner):
+        Sprite.__init__(self)
         self.screen = screen
         self.pos = pos
         self.owner = owner
@@ -39,6 +40,13 @@ class colony(Sprite):
         return self.state in (colony.SELLECT, colony.UNACTIVE)
     
     
+    def healthcheck(self):
+        if self.health >= 50:
+            return colour["h1"]
+        else:
+            return colour["h2"]
+        
+    
     def show(self):
         colimage = pygame.image.load(colony.baseimage[self.owner]).convert()
         colSel = pygame.surface(colony.SIZE,pygame.SRCALPHA)
@@ -50,19 +58,10 @@ class colony(Sprite):
             colSel.set_alpha(0)
         self.screen.blit(colimage,self.pos)
         self.screen.blit(colSel,self.pos)  
-        self.healthdis()
-            
-            
-    def healthcheck(self):
-        if self.health >= 50:
-            return colour["h1"]
-        else
-            return colour["h2"]
         
-    def healthdis(self):
         #aim is to display the health bar
         ocnum = len(self.inhab) # this is the number of inhabitabts
-        healthbg = pygame.surface((colony.SIZE-4)*2, 10),pygame.SRCALPHA)
+        healthbg = pygame.surface(((colony.SIZE-4)*2, 10),pygame.SRCALPHA)
         healthbg.fill(colour["ht"])
         healthbar = pygame.surface(((((colony.SIZE*2)/100)*self.health), 9),pygame.SRCALPHA)
         healthbar.fill(self.healthcheck())
@@ -74,7 +73,9 @@ class colony(Sprite):
         self.screen.blit(text_suf,tex_pos)
         self.screen.blit(healthbg,(self.pos[0]-colony.SIZE,self.pos[1]+5))
         self.screen.blit(healthbar,(self.pos[0]-colony.SIZE,self.pos[1]+5))
-        
+            
+            
+
         
     def update(self ,time_passed):
         if self.state == colony.SELLECT:
@@ -83,13 +84,13 @@ class colony(Sprite):
             self.screen.blit(colsurf,(self.pos))
             
             
-    def antenter(self,ant)
-        if self.owner == ant.owner:
+    def antenter(self,ant):
+        #if self.owner == ant.owner:
             
         if len(self.inhab) > 0:
             del self.inhab[0]
         else:
-            self.health -= value
+            self.health -=self.value
         
         self.healthdis()
         if self.health == 0:
