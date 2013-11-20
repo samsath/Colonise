@@ -19,20 +19,30 @@ colour = {"0":pygame.color.THECOLORS["white"],
         
 
 class colony():
-    SIZE = 20
+    
+    SIZE=(40,40)
+    
+    baseimage = {"0":"colony.png",
+                 "1":"colony1.png",
+                 "2":"colony2.png"}
+    
     def __init__(self,pos,owner):
         self.pos = pos
         self.owner = owner
         self.health = 100 # max 100
         self.inhab = []
-        self.sellect = False
+        self.state = colony.SELLECT
         self.show(self.owner)
-        
+         
+    def is_sellect(self):
+        return self.state in (colony.SELLECT, colony.UNACTIVE)   
         
     def show(self, owner):
         # displays the colony on the map
        
-        selcir = pygame.Surface
+        selcir = pygame.Surface((colony.SIZE,colony.SIZE),pygame.SRCALPHA )
+        selcir.fill((255,0,0,50))
+        
         
         pygame.draw.circle(window,colour[str(owner)],self.pos,colony.SIZE) 
         self.healthdis()
