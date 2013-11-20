@@ -20,14 +20,14 @@ colour = {"0":pygame.color.THECOLORS["white"],
           "h2":pygame.color.THECOLORS["red"]
           } # change this bit to images maybe
 
-class colony(Sprite):
+class colony(pygame.sprite.Sprite):
     baseimage = {"0":"colony.png",
                  "1":"colony1.png",
                  "2":"colony2.png"}
     SIZE=(40,40)
     
-    def __init__(self, screen, c_image, pos, owner):
-        Sprite.__init__(self)
+    def __init__(self, screen, pos, owner):
+        pygame.sprite.Sprite.__init__(self)
         self.screen = screen
         self.pos = pos
         self.owner = owner
@@ -45,7 +45,10 @@ class colony(Sprite):
             return colour["h1"]
         else:
             return colour["h2"]
-        
+      
+    def __str__(self):
+        # returns the information about the col to the computer
+        return str(self.owner) + "," + str(self.health) + "," + str(len(self.inhab))  
     
     def show(self):
         colimage = pygame.image.load(colony.baseimage[self.owner]).convert()
@@ -74,36 +77,47 @@ class colony(Sprite):
         self.screen.blit(healthbg,(self.pos[0]-colony.SIZE,self.pos[1]+5))
         self.screen.blit(healthbar,(self.pos[0]-colony.SIZE,self.pos[1]+5))
             
+       
             
-
-        
-    def update(self ,time_passed):
-        if self.state == colony.SELLECT:
-            colsurf = pygame.image.load(self.base_image).convert()
-            colsurf.set_alpha(50)
-            self.screen.blit(colsurf,(self.pos))
-            
-            
-    def antenter(self,ant):
-        #if self.owner == ant.owner:
-            
-        if len(self.inhab) > 0:
-            del self.inhab[0]
-        else:
-            self.health -=self.value
-        
-        self.healthdis()
+    def collide(self,ant):
         if self.health == 0:
-            self.owner = 0
-            self.health = 100
-            
-    def inhabit(self,ant):
+                self.owner = 0
+                self.health = 100
+        
         if self.owner == ant.owner:
             if self.health < 100:
                 self.health += 1
                 ant.die() # hopefully kill the ant
             else:
                 self.inhab.append(ant) # hopefully add the ant to the list
-        else:
+        else:         
+            if len(self.inhab) > 0:
+                del self.inhab[0]
+            else:
+                self.health -=self.value
+            
             if self.health == 0:
                 self.owner = ant.owner
+                self.health = 0
+
+        
+    def update(self ,time_passed):
+        #send the data and creates new ants
+        if time_passed % 2:
+            if self.pos != (0,0):
+                for ant in self.inhab:
+                    ant(self.pos)
+            else:
+                #create ant
+                pass
+   
+    def _mouseClick(self,pos):
+        if self.state == colony.UNACTIVE:
+            self.state = colony.SELLECT
+        else:
+            self.des = pos
+            
+
+
+    
+    
