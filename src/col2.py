@@ -11,10 +11,10 @@ SIZE=(600,600)
 
 
 
-colour = {"0":pygame.color.THECOLORS["white"],
-          "1":pygame.color.THECOLORS["red"],
-          "2":pygame.color.THECOLORS["blue"],
-          "3":pygame.color.THECOLORS["yellow"],
+colour = {0:pygame.color.THECOLORS["white"],
+          1:pygame.color.THECOLORS["red"],
+          2:pygame.color.THECOLORS["blue"],
+          3:pygame.color.THECOLORS["yellow"],
           "bg":pygame.color.THECOLORS["black"],
           "ht":pygame.color.THECOLORS["grey"],
           "h1":pygame.color.THECOLORS["green"],
@@ -32,17 +32,17 @@ class colony(Sprite):
     
 
     
-    baseimage = {"0":"Colony.png",
-                 "1":"Colony.png",
-                 "2":"Colony.png",
-                 "3":"Colony.png"}
+    baseimage = {0:"Colony.png",
+                 1:"Colony1.png",
+                 2:"Colony2.png",
+                 3:"Colony3.png"}
     SIZE=(20,20)
     
     def __init__(self, screen, pos, owner):
         Sprite.__init__(self)
         self.screen = screen
         self.pos = pos
-        self.owner = str(owner)
+        self.owner = owner
         self.health = 100 # max 100
         self.inhab = []
         self.state = False
@@ -85,7 +85,7 @@ class colony(Sprite):
             
     def collide(self,ant):
         if self.health == 0:
-                self.owner = 0
+                self.owner = 010
                 self.health = 100
         
         if self.owner == ant.owner:
@@ -110,9 +110,10 @@ class colony(Sprite):
         #send the data and creates new ants
         if time_passed % 2:
             if self.pos != (0,0):
-                for ant in self.inhab:
-                    #ant(self.pos)
-                    pass
+                if len(self.inhab) > 0:
+                    for ant in self.inhab:
+                        ant(self.pos)
+                        pass
             else:
                 #create ant
                 pass
@@ -132,13 +133,18 @@ class colony(Sprite):
     def _mouseClick(self,mouspos):
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0] :
             print str(self.state)
-            if self.owner == 3:
+            if self.owner == 1:
                 if self.state == False:
                     self.state = True
                 else:
                     self.state = False
                     self.des = mouspos
                 self.draw_select()
+        else:
+            if self.state == True:
+                if len(self.inhab) > 0:
+                    for ant in self.inhab:
+                        ant.set_target(mouspos)
 
 class ant(Sprite):
     def __init__(self):
@@ -163,12 +169,16 @@ window.blit(bg_img,(0,0,600,600))
 
 #####Produce the map
 mapload() ## this will be a funtion to load a file(.csv) and set the colong info to it
-for i in range(10):
+for i in range(5):
     col = colony(window,(randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), randint(0,3))
     colony_list.add(col)
 
 
 clock = pygame.time.Clock()
+
+def stop():    
+    pygame.quit()
+
 while True:
 
     
@@ -191,11 +201,9 @@ while True:
         
            
     if event.type == pygame.QUIT:
-        break
+        stop()
     if event.type == pygame.MOUSEBUTTONDOWN:
         loc = pygame.mouse.get_pos()
         for c in colony_list:
             c._mouseClick(loc)
-pygame.quit()
-    
-    
+ 
