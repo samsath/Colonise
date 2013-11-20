@@ -4,9 +4,9 @@ need to add the orbit
 '''
 
 import pygame
-import time
+
 import math
-from math import atan2, degrees, pi, hypot
+
 
 SIZE=(600,600)
 
