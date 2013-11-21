@@ -1,11 +1,14 @@
 from __future__ import division
 import os, sys
 from random import randrange, randint
+import math
 from math import hypot
 
 import pygame
 from pygame import Rect
 from pygame.sprite import Sprite
+
+import csv
 
 SIZE=(600,600)
 
@@ -20,11 +23,12 @@ colour = {0:pygame.color.THECOLORS["white"],
           "h1":pygame.color.THECOLORS["green"],
           "h2":pygame.color.THECOLORS["red"]
           } # change this bit to images maybe
+
 levels = {"1":"level1.cvs",
           "2":"level2.cvs"}
 
 def mapload():
-    ## code here to load up the csv and create the map acordingly
+    #open csv file for each level
     pass
 
 
@@ -76,10 +80,11 @@ class colony(Sprite):
         
         #writes to screen
         self.screen.blit(colimage,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
-        self.screen.blit(text_suf,tex_pos)
         self.screen.blit(healthbg,(self.pos[0]-6,self.pos[1]+12))
         self.screen.blit(healthbar,((self.pos[0]-5),self.pos[1]+13.5))
-       
+        if self.owner == 1:
+            # this is so only you can see your own army size
+            self.screen.blit(text_suf,tex_pos)
             
        
             
@@ -108,15 +113,18 @@ class colony(Sprite):
     def update(self ,time_passed):
         self.show()
         #send the data and creates new ants
-        if time_passed % 2:
-            if self.pos != (0,0):
-                if len(self.inhab) > 0:
-                    for ant in self.inhab:
-                        ant(self.pos)
-                        pass
-            else:
-                #create ant
-                pass
+        if self.owner != 0:
+            # if the colony isnt empty then it will do thing's else not
+            if time_passed % 2:
+                if self.pos != (0,0):
+                    if len(self.inhab) > 0:
+                        for ant in self.inhab:
+                            #send the ants to the mouse point
+                            ant(self.pos)
+                            pass
+                else:
+                    #create ant
+                    pass
             
     def draw_select(self):
         
@@ -146,11 +154,11 @@ class colony(Sprite):
                     for ant in self.inhab:
                         ant.set_target(mouspos)
 
-class ant(Sprite):
-    def __init__(self):
-        Sprite.__init__(self)
-        
 
+
+class ant(pygame.sprite.Sprite):
+   pass
+        
 
 
 pygame.init()
