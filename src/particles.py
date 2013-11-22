@@ -107,5 +107,6 @@ while True:
         break
     if event.type == pygame.MOUSEBUTTONDOWN:
         (pygame.mouse.get_pos())
+        print(pygame.mouse.get_pos())
         ants.set_target(pygame.mouse.get_pos())
 pygame.quit()
