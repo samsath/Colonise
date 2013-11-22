@@ -1,16 +1,13 @@
 from __future__ import division
-from random import randrange, randint
 import math
 from math import hypot
+from random import randint
 
 import pygame
 from pygame.sprite import Sprite
-
-
+import csv
 
 SIZE=(600,600)
-
-
 
 colour = {0:pygame.color.THECOLORS["white"],
           1:pygame.color.THECOLORS["red"],
@@ -22,8 +19,8 @@ colour = {0:pygame.color.THECOLORS["white"],
           "h2":pygame.color.THECOLORS["red"]
           } # change this bit to images maybe
 
-levels = {"1":"level1.cvs",
-          "2":"level2.cvs"}
+levels = {1:"level1.csv",
+          2:"level2.csv"}
 
 baseimage = {0:"Colony.png",
              1:"Colony1.png",
@@ -31,11 +28,16 @@ baseimage = {0:"Colony.png",
              3:"Colony3.png"}
 
 
-
-def mapload():
+def mapload(lev):
     #open csv file for each level
-    pass
+    cl = csv.reader(open(levels[lev],"rb"))
+    for row in cl:
+        col = colony(window,(int(row[1]),int(row[2])),int(row[0]))
+        colony_list.add(col)
 
+def stop():    
+    pygame.quit()
+    
 #########################################################
 #                        Ant                            #
 # some simple vector helper functions, stolen from http://stackoverflow.com/a/4114962/142637
@@ -57,13 +59,8 @@ def normalize(v):
     return [ v[i]/vmag  for i in range(len(v)) ]
 
 
-
-
 class colony(Sprite):
     
-
-    
-   
     SIZE=(20,20)
     
     def __init__(self, screen, pos, owner):
@@ -72,7 +69,7 @@ class colony(Sprite):
         self.pos = pos
         self.owner = owner
         self.health = 100 # max 100
-        self.inhab = []
+        self.inhab = pygame.sprite.Group()
         self.state = False
         self.show()
         (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
@@ -85,9 +82,12 @@ class colony(Sprite):
         else:
             return colour["h2"]
       
-    def __str__(self):
-        # returns the information aboself.pos[0]-colony.SIZE[0]/4,ut the col to the computer
-        return str(self.owner) + "," + str(self.health) + "," + str(len(self.inhab))  
+    def show_owner(self):
+        return self.owner
+    
+    def show_inhab(self):
+        return len(self.inhab)
+    
     
     def show(self):
         colimage = pygame.image.load(baseimage[self.owner]).convert_alpha()
@@ -140,17 +140,18 @@ class colony(Sprite):
         if self.owner != 0:
             # if the colony isnt empty then it will do thing's else not
             if time_passed % 2:
-                if self.pos != (0,0):
-                    if len(self.inhab) > 0:
-                        for ant in self.inhab:
-                            #send the ants to the mouse point
-                            ant.set_target(self.pos)
-                            pass
+                #if self.pos != (0,0):
+                if len(self.inhab) > 0:
+                    for ant in self.inhab:
+                        #send the ants to the mouse point
+                        ant.set_target(self.pos)
+                           
                 
-                print "Ant added {}".format(self.owner)
-                ant = Ant(self.owner,insect)
+                
+                ant = Ant(self.owner,insect,self.pos)
                 ant_list.add(ant)
-                self.inhab.append(ant)
+                
+                self.inhab.add(ant)
                 
             
     def draw_select(self):
@@ -167,7 +168,6 @@ class colony(Sprite):
         
     def _mouseClick(self,mouspos):
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0] :
-            print str(self.state)
             if self.owner == 1:
                 if self.state == False:
                     self.state = True
@@ -178,22 +178,27 @@ class colony(Sprite):
         else:
             if self.state == True:
                 if len(self.inhab) > 0:
-                    for ant in self.inhab:
-                        ant.set_target(mouspos)
+                    for ant in ant_list:
+                        if ant.owner == self.owner:
+                            ant.set_target(mouspos)
+                            ant.update()
+                            print ant
+                    self.state = False
 
 
 
 class Ant(Sprite):
     orbit = 0
-    def __init__(self,owner,picture):
+    def __init__(self,owner,picture,pos):
         Sprite.__init__(self)
-        self.x, self.y = (0,0)
+        self.x, self.y = pos[0],pos[1]
         self.set_target((0, 0))
         self.speed = 0.7
         self.owner = owner
+        self.pic = picture
         #self.show(pygame.color.THECOLORS["white"])
-        self.show(picture)
-      
+        
+    
     @property
     def pos(self):
         return self.x, self.y
@@ -215,6 +220,9 @@ class Ant(Sprite):
     def set_target(self, pos):
         self.t_x, self.t_y = pos
 
+    def owner (self):
+        return self.owner
+        
     def update(self):
         # if we won't move, don't calculate new vectors
         if self.int_pos == self.int_target:
@@ -231,12 +239,46 @@ class Ant(Sprite):
         move_vector = [c * self.speed for c in normalize(target_vector)]
 
         # update position
-        self.x, self.y = add(self.pos, move_vector)          
+        self.x, self.y = add(self.pos, move_vector) 
+        self.show(self.pic)         
         
     def show(self,c):
         window.blit(c,self.int_pos)
         
 
+class enimy():
+    def __init__(self,owner):
+        self.owner = owner
+        self.update()
+    
+    def is_owned(self):
+        return self.owner
+        
+    def update(self):
+        '''
+        Here needs something which goes through the list colony list if it is a
+        same owner works out the inhab and if it is over a centain number it picks if it should
+        send the ants to a random collony which it doens't own or build up army
+        '''
+        for c in colony_list:
+            if c.show_owner() == self.owner:
+                if c.show_inhab() > 150:
+                    choose = randint(1,3)
+                    if choose == 1:
+                        
+                        for ant in ant_list:
+                            if ant.owner == self.owner:
+                                ant.set_target(mouspos)
+                                ant.update()
+                                
+                    
+                    else:
+                        # wait and build army
+                        pass
+                        
+                    
+                
+        
 
 pygame.init()
 ant_tick = 0
@@ -253,18 +295,14 @@ bg_img = pygame.image.load("grass.jpg").convert()
 window.blit(bg_img,(0,0,600,600))
 
 #####Produce the map
-mapload() ## this will be a funtion to load a file(.csv) and set the colong info to it
-for i in range(5):
-    col = colony(window,(randrange(20,SIZE[0]-20),randrange(20, SIZE[1]-20)), randint(0,3))
-    colony_list.add(col)
+mapload(1) ## this will be a funtion to load a file(.csv) and set the colong info to it
+
 
 
 clock = pygame.time.Clock()
 
 insect = pygame.image.load('ant.png').convert_alpha()
 
-def stop():    
-    pygame.quit()
 
 while True:
 
@@ -273,21 +311,23 @@ while True:
     event = pygame.event.poll()
     
     clock.tick()
-    elapsed = clock.get_time()
-
+    elapsed = clock.tick(100)
+    
     ant_tick += elapsed
     col_tick += elapsed
     if ant_tick > 25:
         ant_tick = 0
-    if col_tick > 10000:
-        col_tick = 0    
+    if col_tick > 1000:
+        col_tick = 0 
     
     for a in ant_list:
         a.update()    
         
+    
     for c in colony_list: 
         c.update(col_tick)
-        
+    
+    #pygame.sprite.groupcollide(ant_list, colony_list, True, False)
            
     if event.type == pygame.QUIT:
         stop()
