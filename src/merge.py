@@ -1,14 +1,12 @@
 from __future__ import division
-import os, sys
 from random import randrange, randint
 import math
 from math import hypot
 
 import pygame
-from pygame import Rect
 from pygame.sprite import Sprite
 
-import csv
+
 
 SIZE=(600,600)
 
@@ -26,6 +24,13 @@ colour = {0:pygame.color.THECOLORS["white"],
 
 levels = {"1":"level1.cvs",
           "2":"level2.cvs"}
+
+baseimage = {0:"Colony.png",
+             1:"Colony1.png",
+             2:"Colony2.png",
+             3:"Colony3.png"}
+
+
 
 def mapload():
     #open csv file for each level
@@ -58,10 +63,7 @@ class colony(Sprite):
     
 
     
-    baseimage = {0:"Colony.png",
-                 1:"Colony1.png",
-                 2:"Colony2.png",
-                 3:"Colony3.png"}
+   
     SIZE=(20,20)
     
     def __init__(self, screen, pos, owner):
@@ -88,7 +90,7 @@ class colony(Sprite):
         return str(self.owner) + "," + str(self.health) + "," + str(len(self.inhab))  
     
     def show(self):
-        colimage = pygame.image.load(colony.baseimage[self.owner]).convert_alpha()
+        colimage = pygame.image.load(baseimage[self.owner]).convert_alpha()
         
         #aim is to display the health bar
         ocnum = len(self.inhab) # this is the number of inhabitabts
@@ -142,11 +144,14 @@ class colony(Sprite):
                     if len(self.inhab) > 0:
                         for ant in self.inhab:
                             #send the ants to the mouse point
-                            ant(self.pos)
+                            ant.set_target(self.pos)
                             pass
-                else:
-                    #create ant
-                    pass
+                
+                print "Ant added {}".format(self.owner)
+                ant = Ant(self.owner,insect)
+                ant_list.add(ant)
+                self.inhab.append(ant)
+                
             
     def draw_select(self):
         
@@ -178,9 +183,10 @@ class colony(Sprite):
 
 
 
-class ant(pygame.sprite.Sprite):
+class Ant(Sprite):
     orbit = 0
     def __init__(self,owner,picture):
+        Sprite.__init__(self)
         self.x, self.y = (0,0)
         self.set_target((0, 0))
         self.speed = 0.7
@@ -239,7 +245,7 @@ col_tick = 0
 ###### list of all the sprite groups
 colony_list = pygame.sprite.Group()
 ant_list = pygame.sprite.Group()
-#all_sprite_list = pygame.sprite.Group()
+all_sprite_list = pygame.sprite.Group()
 
 #####Screen
 window = pygame.display.set_mode(SIZE)
@@ -254,6 +260,8 @@ for i in range(5):
 
 
 clock = pygame.time.Clock()
+
+insect = pygame.image.load('ant.png').convert_alpha()
 
 def stop():    
     pygame.quit()
@@ -271,12 +279,14 @@ while True:
     col_tick += elapsed
     if ant_tick > 25:
         ant_tick = 0
-    if col_tick > 1000:
+    if col_tick > 10000:
         col_tick = 0    
-        
+    
+    for a in ant_list:
+        a.update()    
         
     for c in colony_list: 
-        c .update(col_tick)
+        c.update(col_tick)
         
            
     if event.type == pygame.QUIT:
