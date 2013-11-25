@@ -69,7 +69,7 @@ class colony(Sprite):
         self.pos = pos
         self.owner = owner
         self.health = 100 # max 100
-        self.inhab = pygame.sprite.Group()
+        self.inhab = 0
         self.state = False
         self.show()
         (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
@@ -86,26 +86,25 @@ class colony(Sprite):
         return self.owner
     
     def show_inhab(self):
-        return len(self.inhab)
+        return self.inhab
     
     
     def show(self):
         colimage = pygame.image.load(baseimage[self.owner]).convert_alpha()
         
         #aim is to display the health bar
-        ocnum = len(self.inhab) # this is the number of inhabitabts
         healthbg = pygame.Surface((((colony.SIZE[0]-4)*2), 10),pygame.SRCALPHA)
         healthbg.fill(colour["ht"])
         healthbar = pygame.Surface((((((colony.SIZE[0]-5)*2)/100)*self.health), 7),pygame.SRCALPHA)
         healthbar.fill(self.healthcheck())
         font = pygame.font.Font(None,30)
-        text_suf = font.render(str(ocnum), 1, colour["ht"])
+        text_suf = font.render(str(self.inhab), 1, colour["ht"])
         tex_pos = (self.pos[0]+4,self.pos[1]-11)
         
         #writes to screen
         self.screen.blit(colimage,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         self.screen.blit(healthbg,(self.pos[0]-6,self.pos[1]+12))
-        self.screen.blit(healthbar,((self.pos[0]-5),self.pos[1]+13.5))
+        self.screen.blit(healthbar,(self.pos[0]-5,self.pos[1]+13.5))
         if self.owner == 1:
             # this is so only you can see your own army size
             self.screen.blit(text_suf,tex_pos)
@@ -124,8 +123,8 @@ class colony(Sprite):
             else:
                 self.inhab.append(ant) # hopefully add the ant to the list
         else:         
-            if len(self.inhab) > 0:
-                del self.inhab[0]
+            if self.inhab > 0:
+                self.inhab -= 1
             else:
                 self.health -=self.value
             
@@ -139,21 +138,10 @@ class colony(Sprite):
         #send the data and creates new ants
         if self.owner != 0:
             # if the colony isnt empty then it will do thing's else not
-            if time_passed % 2:
-                #if self.pos != (0,0):
-                if len(self.inhab) > 0:
-                    for ant in self.inhab:
-                        #send the ants to the mouse point
-                        ant.set_target(self.pos)
-                           
-                
-                
-                ant = Ant(self.owner,insect,self.pos)
-                ant_list.add(ant)
-                
-                self.inhab.add(ant)
-                
-            
+            if time_passed < 5:
+                self.inhab += 1
+
+      
     def draw_select(self):
         
         sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
@@ -173,13 +161,13 @@ class colony(Sprite):
                     self.state = True
                 else:
                     self.state = False
-                    self.des = mouspos
                 self.draw_select()
         else:
             if self.state == True:
-                if len(self.inhab) > 0:
+                if self.inhab > 0:
+                    #create ant when needed  then send it to location
                     for ant in ant_list:
-                        if ant.owner == self.owner:
+                        if ant.isowner == self.owner:
                             ant.set_target(mouspos)
                             ant.update()
                             print ant
@@ -220,14 +208,14 @@ class Ant(Sprite):
     def set_target(self, pos):
         self.t_x, self.t_y = pos
 
-    def owner (self):
+    def isowner (self):
         return self.owner
         
     def update(self):
         # if we won't move, don't calculate new vectors
         if self.int_pos == self.int_target:
             return 
-
+        print self.target
         target_vector = sub(self.target, self.pos) 
 
         # a threshold to stop moving if the distance is to small.
@@ -311,7 +299,7 @@ while True:
     event = pygame.event.poll()
     
     clock.tick()
-    elapsed = clock.tick(100)
+    elapsed = clock.tick(25)
     
     ant_tick += elapsed
     col_tick += elapsed
@@ -319,12 +307,13 @@ while True:
         ant_tick = 0
     if col_tick > 1000:
         col_tick = 0 
-    
+
     for a in ant_list:
         a.update()    
         
     
     for c in colony_list: 
+
         c.update(col_tick)
     
     #pygame.sprite.groupcollide(ant_list, colony_list, True, False)
@@ -335,4 +324,3 @@ while True:
         loc = pygame.mouse.get_pos()
         for c in colony_list:
             c._mouseClick(loc)
- 
