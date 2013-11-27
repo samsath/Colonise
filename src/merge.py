@@ -134,12 +134,35 @@ class colony(Sprite):
 
         
     def update(self ,time_passed):
+        # possible add the enime AI here
         self.show()
         #send the data and creates new ants
         if self.owner != 0:
             # if the colony isnt empty then it will do thing's else not
             if time_passed < 5:
                 self.inhab += 1
+            #owner 1 is user
+            if self.owner >= 2:
+                while self.inhab >= 150:
+                    choose = randint(1,3)
+                if choose == 1:
+                        #attack
+                        for c in colony_list:
+                            if c.owner != self.owner:
+                                #this will send them there
+                                ants=Ant(c.pos)
+                                ant_list.add(ants)
+                elif choose == 2:
+                    # this will hopefully build up the army
+                    break
+                elif choose == 3:
+                    #move to other same collony
+                    for c in colony_list:
+                        if c.owner == self.owner:
+                            #this will send them there
+                            ants=Ant(c.pos)
+                            ant_list.add(ants)
+                
 
       
     def draw_select(self):
@@ -253,7 +276,6 @@ class enimy():
                 if c.show_inhab() > 150:
                     choose = randint(1,3)
                     if choose == 1:
-                        
                         for ant in ant_list:
                             if ant.owner == self.owner:
                                 ant.set_target(mouspos)
@@ -279,6 +301,7 @@ all_sprite_list = pygame.sprite.Group()
 
 #####Screen
 window = pygame.display.set_mode(SIZE)
+pygame.display.set_caption('Colonise')
 bg_img = pygame.image.load("grass.jpg").convert()
 window.blit(bg_img,(0,0,600,600))
 
