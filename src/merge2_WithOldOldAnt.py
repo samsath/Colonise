@@ -34,7 +34,8 @@ baseimage = {0:"Colony.png",
              3:"Colony3.png"}
 
 Logo= {"win":"WinScreen.png",
-       "loss":"lossScreen.png"}
+       "loss":"lossScreen.png",
+       "Splash":"openScreen.png"}
 
 
 def mapload(lev):
