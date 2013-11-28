@@ -38,6 +38,7 @@ Logo= {"win":"WinScreen.png",
        "Splash":"openScreen.png"}
 
 
+
 def mapload(lev):
     #open csv file for each level
     cl = csv.reader(open(levels[lev],"rb"))
@@ -269,7 +270,7 @@ all_sprite_list = pygame.sprite.Group()
 
 #####Screen
 window = pygame.display.set_mode(SIZE)
-pygame.display.set_caption('Colonise')
+pygame.display.set_caption('Colonise','icon.png')
 bg_img = pygame.image.load("grass.jpg").convert()
 window.blit(bg_img,(0,0,600,600))
 
@@ -281,6 +282,8 @@ mapload(1) ## this will be a funtion to load a file(.csv) and set the colong inf
 clock = pygame.time.Clock()
 
 insect = pygame.image.load('ant.png').convert_alpha()
+
+
 
 
 while True:
