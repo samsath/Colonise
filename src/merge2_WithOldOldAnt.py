@@ -33,6 +33,9 @@ baseimage = {0:"Colony.png",
              2:"Colony2.png",
              3:"Colony3.png"}
 
+Logo= {"win":"WinScreen.png",
+       "loss":"lossScreen.png"}
+
 
 def mapload(lev):
     #open csv file for each level
