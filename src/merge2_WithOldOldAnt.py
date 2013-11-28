@@ -21,7 +21,8 @@ colour = {0:pygame.color.THECOLORS["white"],
           "bg":pygame.color.THECOLORS["black"],
           "ht":pygame.color.THECOLORS["grey"],
           "h1":pygame.color.THECOLORS["green4"],
-          "h2":pygame.color.THECOLORS["red"]
+          "h2":pygame.color.THECOLORS["red"],
+          "bg-c":(0,122,49,255),
           } # change this bit to images maybe
 
 levels = {1:"level1.csv",
@@ -37,19 +38,18 @@ def mapload(lev):
     #open csv file for each level
     cl = csv.reader(open(levels[lev],"rb"))
     for row in cl:
-        col = colony(window,(int(row[1]),int(row[2])),int(row[0]))
+        col = colony(window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])))
         colony_list.add(col)
 
 def stop():    
     pygame.quit()
     
 
-
 class colony(Sprite):
     
     SIZE=(20,20)
     
-    def __init__(self, screen, pos, owner):
+    def __init__(self, screen, pos, owner, limit):
         Sprite.__init__(self)
         self.screen = screen
         self.pos = pos
@@ -57,23 +57,16 @@ class colony(Sprite):
         self.health = 10 # max 100
         self.inhab = 0
         self.state = False
+        self.attack_limit = limit# this is for the amount of ant the colony should have before attack
         self.show()
         (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
-   
-    
+  
     
     def healthcheck(self):
         if self.health >= 5:
             return colour["h1"]
         else:
             return colour["h2"]
-      
-    def show_owner(self):
-        return self.owner
-    
-    def show_inhab(self):
-        return self.inhab
-    
     
     def show(self):
         colimage = pygame.image.load(baseimage[self.owner]).convert_alpha()
@@ -98,26 +91,22 @@ class colony(Sprite):
        
             
     def collide(self,ant):
-        print str(self.owner) + ", Collided"
-        if self.health == 0:
-                self.owner = 0
-                self.health = 10
-        
-        if self.owner == ant.owner:
+        #print str(self.owner) + ", Collided with ant " + str(ant.owner)
+        if ant.owner != self.owner:
+            if self.health <= 1:
+                self.owner = ant.owner
+                self.health = 1
+            else:
+                if self.inhab > 1:
+                    self.inhab -= 3 # element of surprise
+                else:
+                    self.health -= 1
+        else:
             if self.health < 10:
                 self.health += 1
             else:
-                self.inhab += 1 # hopefully add the ant to the list
-        else:         
-            if self.inhab > 0:
-                self.inhab -= 5 # element of surprise 
-            else:
-                self.health -= 2
-            
-            if self.health == 0:
-                self.owner = ant.owner
-                self.health = 0
-        ant.die() # hopefully kill the ant
+                self.inhab += 1
+     
 
         
     def update(self ,time_passed):
@@ -158,29 +147,28 @@ class colony(Sprite):
 
       
     def draw_select(self):
-        
-        sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
-        if self.state == True:
-            ucolour = list(colour[self.owner])
-            ucolour[3]=255
-            sel.fill(ucolour)
-        else:
-            sel.fill((0,122,49,255))
-            
-        self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
+        if self.owner == 1:
+            sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
+            if self.state == True:
+                ucolour = list(colour[self.owner])
+                ucolour[3]=255
+                sel.fill(ucolour)
+            else:
+                sel.fill((0,122,49,255))
+                
+            self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         
     def _mouseClickRight(self,mouspos):    
-        print "Right " + "," + str(self.state) +","+ str(mouspos)
+
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0]*2 :
             if self.owner == 1:
                 if self.state == False:
                     self.state = True
-                    print self.state
                 else:
                     self.state = False
     
     def _mouseClickLeft(self,mouspos):
-            print "Left " + "," +str(self.state) +","+ str(mouspos)
+
             if self.state == True:
                 #if self.inhab > 0:
                 if self.inhab > 0:
@@ -191,21 +179,16 @@ class colony(Sprite):
                     self.inhab -= 1
     
 
-
-                       
-                    
+     
 class ants(Sprite):
-    orbit = 30
+
     def __init__(self,pos,vel,owner):
-        '''
-        The __init__ will have the position (x,y), velocity (x,y) and the owner int(1-3)
-        '''
         Sprite.__init__(self)
         self.pos = pos
         self.vel = vel
         self.dest = [0,0]
         self.owner = owner
-        self.show( pygame.color.THECOLORS["white"])
+        self.show(colour[0])
         
     def show(self,c):
         pygame.draw.circle(window,c, self.pos,2)
@@ -224,9 +207,8 @@ class ants(Sprite):
         self.dest = loc
 
     def die(self):
-        self.show(pygame.color.THECOLORS["green4"])
-        self.dest = self.pos
-        self.vel = (0,0)
+        ant_list.remove(self)
+        del self
    
     def update(self,time_passed):
         if time_passed < 5:
@@ -253,25 +235,22 @@ class ants(Sprite):
                 elif posangle == 270:
                     self.vel = [-1,0] 
             else:
-                '''
-                if the ant is in the same location as the end possition check to see
-                there is a collony in that location and run that collony collide def
-                ''' 
                 
                 for c in colony_list:
-                    print c.pos
-                    if hypot((c.pos[0]-self.pos[0]),(c.pos[1]-self.pos[1])) <= 10:
-                        print "Ant has reached Enimy"
+
+                    if hypot((c.pos[0]-self.pos[0]),(c.pos[1]-self.pos[1])) <= 20:
+
                         c.collide(self)
+                        
                     else:
                         pass
-                self.vel = [0,0]
+                self.kill()
             
-            #self.show(pygame.color.THECOLORS["black"]) # leaves a trail
-            self.show(pygame.color.THECOLORS["green4"]) # leaves a trail
+
+            self.show(colour['bg-c']) # leaves a trail
             newpos = [int(self.pos[0]+self.vel[0]),int(self.pos[1]+self.vel[1])]
             self.pos = newpos
-            self.show(pygame.color.THECOLORS["white"])
+            self.show(colour[0])
                             
         
 
