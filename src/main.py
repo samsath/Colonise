@@ -1,109 +1,81 @@
-'''
-This will be the main program where the game will run from.
-'''
-#lets see now
-import sys
+from __future__ import division
+from math import hypot,atan2, degrees, pi
+from random import randint
+
 import pygame
-import time
-from random import randrange
+from pygame.sprite import Sprite
+import csv
 
+SIZE=(600,600)
 
+colour = {0:pygame.color.THECOLORS["white"],
+          1:pygame.color.THECOLORS["red"],
+          2:pygame.color.THECOLORS["blue"],
+          3:pygame.color.THECOLORS["yellow"],
+          "bg":pygame.color.THECOLORS["black"],
+          "ht":pygame.color.THECOLORS["grey"],
+          "h1":pygame.color.THECOLORS["green4"],
+          "h2":pygame.color.THECOLORS["red"],
+          "bg-c":(0,122,49,255),
+          } # change this bit to images maybe
 
-SIZE = (400,400)
-colour = pygame.color.THECOLORS
+levels = {1:"level1.csv",
+          2:"level2.csv"}
 
-class ant(pygame.sprite.Sprite):
-    
-    vel=(2,2)
-    
-    def __init__(self,pos,dest,owner):
-        self.pos = pos
-        self.des = dest
-        self.owner = owner
-        self.show()
-    
-    def show(self):
-        if self.owner == 0:
-            pygame.draw.rect(screen, colour["black"], self.pos,2)
-        if self.owner == 1:
-            pygame.draw.rect(screen, colour["white"], self.pos,2)
-        if self.owner == 2:
-            pygame.draw.rect(screen, colour["red"], self.pos,2)
-        if self.owner == 3:
-            pygame.draw.rect(screen, colour["blue"], self.pos,2) 
-            
-            
-    def nearDest(self,pos,des):
-        # return boolean if the pos of the ant is within the desination
-        pass
+baseimage = {0:"Colony.png",
+             1:"Colony1.png",
+             2:"Colony2.png",
+             3:"Colony3.png"}
+
+Logo= {"win":"WinScreen.png",
+       "loss":"lossScreen.png",
+       "Splash":"openScreen.png",
+       "grass":"grass.jpg"}
+
+class Menu:
+    def __init__(self):
+        self.screen = pygame.display.set_mode(SIZE)
+        pygame.display.set_caption('Colonise','icon.png')
+        self.game = Game()
+        # background here
+        bg_img = pygame.image.load(Logo("Splash")).convert()
+        self.blit(bg_img,(0,0,600,600))
         
+        ###### list of all the sprite groups
+        colony_list = pygame.sprite.Group()
+        ant_list = pygame.sprite.Group()
+        all_sprite_list = pygame.sprite.Group()
         
-    def update(self):
-        if nearDest(self.pos, self.dest):
-           pass #this will orbin the dest 
-        else:
-            # this will head to the destination#
-            pass
+        self.loop()
+    
+    def loop(self):
+        pygame.display.update()
+        event = pygame.event.poll()
+        
+        clock.tick()
+        elapsed = clock.tick(25)
+        
+        ant_tick += elapsed
+        col_tick += elapsed
+        
+        if ant_tick > 25:
+            ant_tick = 0
+        if col_tick > 1000:
+            col_tick = 0
+        
+        for a in ant_list:
+            a.update(ant_tick)    
+        
+    
+        for c in colony_list: 
+            c.update(col_tick)
             
-    def death(self):
-        self.owenr = 0
-        self.show()
-
-class colony(pygame.sprite.Sprite):
-    
-    def __init__(self,pos,size,owner=1):
-        self.pos, self.size = pos, size
-        self.owner = owner
-        self.show(self.owner)
-        self.health = self.size*2
-        
-    def show(self,owner):
-        if self.owner == 0:
-            pygame.draw.circle(screen, colour["black"], self.pos,self.size)
-        if self.owner == 1:
-            pygame.draw.circle(screen, colour["white"], self.pos,self.size)
-        if self.owner == 2:
-            pygame.draw.circle(screen, colour["red"], self.pos,self.size)
-        if self.owner == 3:
-            pygame.draw.circle(screen, colour["blue"], self.pos,self.size)   
-            
-    def who_owns(self):
-        return self.owner
-    
-    def where(self):
-        return self.pos
-    
-    def create(self, time):
-        pass
-        #name = time.time()
-        #name = ant(self.pos,(1,1),self.owner)
-        
-
-def exit_game():
-    sys.exit()   
-    
-pygame.init()
-screen = pygame.display.set_mode(SIZE)
-screen.fill(colour["darkgreen"])
-clock = pygame.time.Clock()
-ant_list = pygame.sprite.Group()
-col_list = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group() 
-for ow in [1,1,1,2,3]:
-    cs = randrange(10,20)
-    col = colony((randrange(cs,SIZE[0]-cs),randrange(cs, SIZE[1]-cs)),cs, ow)
-    col_list.add(col)
-
-pygame.display.flip()
-
-
-'''
-Main loop
-'''
-while True:
-    # limits the fps
-    time_passed = clock.tick(50)
-    
-    for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit_game()
+            stop()
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            for c in colony_list:
+                c._mouseClickLeft(pygame.mouse.get_pos())
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            for c in colony_list:
+                c._mouseClickRight(pygame.mouse.get_pos())
+            
