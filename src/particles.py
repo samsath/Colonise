@@ -42,7 +42,6 @@ class ant(pygame.sprite.Sprite):
         #self.show(pygame.color.THECOLORS["white"])
         self.angle = 0
         self.show(picture)
-        self.angle = -90
 
     @property
     def pos(self):
@@ -76,7 +75,7 @@ class ant(pygame.sprite.Sprite):
         # it prevents a 'flickering' between two points
         if magnitude(target_vector) < 2: 
             return
-        angle = self.angle() + 90
+
         # apply the ship's speed to the vector
         move_vector = [c * self.speed for c in normalize(target_vector)]
 
@@ -96,7 +95,6 @@ window = pygame.display.set_mode(SIZE)
 window.fill(pygame.color.THECOLORS["black"])
 bg = pygame.image.load('grass.jpg').convert()
 insect = pygame.image.load('ant.png').convert_alpha()
-
 ants = ant(1,insect)
 pygame.display.flip()
 
@@ -117,5 +115,4 @@ while True:
         (pygame.mouse.get_pos())
         print(pygame.mouse.get_pos())
         ants.set_target(pygame.mouse.get_pos())
-
 pygame.quit()
