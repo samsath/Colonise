@@ -145,8 +145,7 @@ class game():
                 self.col_tick = 0 
         
             for a in self.ant_list:
-                a.update(self.ant_tick)    
-                
+                a.update(self.ant_tick)
             
             for c in self.colony_list: 
                 c.update(self.col_tick)
@@ -160,7 +159,7 @@ class game():
             if event.type == pygame.QUIT:
                 stop()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                
+                print pygame.mouse.get_pos()    
                 if self.state == "play":
                     for c in self.colony_list:
                         c._mouseClickLeft(pygame.mouse.get_pos())
@@ -344,9 +343,8 @@ class colony(Sprite):
         '''
         What happens to the collony when the button is clicked = Send ants inhabiting the collony there
         '''
-
+        
         if self.state == True:
-            #if self.inhab > 0:
             if self.inhab > 0:
                 #create ant when needed  then send it to location
                 ant=ants(self.game,self.pos,insect,self.owner)
@@ -399,6 +397,7 @@ class ants(Sprite):
         del self
    
     def update(self,time_passed):
+        print 'time passed', time_passed
         if time_passed < 5:
             
             if self.int_pos == self.int_target:
@@ -426,7 +425,6 @@ class ants(Sprite):
                 else:
                     pass
             
-            #print self.x, self.y
 
             self.show(insect)            
                             
