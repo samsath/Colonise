@@ -34,11 +34,11 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer4"
      showgrid="false"
-     inkscape:window-width="755"
-     inkscape:window-height="570"
-     inkscape:window-x="271"
-     inkscape:window-y="290"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
+     inkscape:window-x="1440"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata3302">
     <rdf:RDF>
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -86,7 +86,7 @@
          style="stroke-width:8.39799976;stroke-miterlimit:4;stroke-dasharray:none">
         <path
            transform="matrix(1.3615112,0,0,1.5551357,-94.548359,-326.33919)"
-           d="m 232.33509,639.71484 a 19.697975,14.647212 0 1 1 -39.39595,0 19.697975,14.647212 0 1 1 39.39595,0 z"
+           d="m 232.33509,639.71484 c 0,8.08944 -8.81908,14.64722 -19.69797,14.64722 -10.8789,0 -19.69798,-6.55778 -19.69798,-14.64722 0,-8.08943 8.81908,-14.64721 19.69798,-14.64721 10.87889,0 19.69797,6.55778 19.69797,14.64721 z"
            sodipodi:ry="14.647212"
            sodipodi:rx="19.697975"
            sodipodi:cy="639.71484"
@@ -96,7 +96,7 @@
            sodipodi:type="arc" />
         <path
            transform="matrix(1.2059959,0,0,1.2596361,-53.351434,-161.01884)"
-           d="m 233.34523,676.58545 a 45.456863,28.284271 0 1 1 -90.91373,0 45.456863,28.284271 0 1 1 90.91373,0 z"
+           d="m 233.34523,676.58545 c 0,15.62097 -20.35173,28.28427 -45.45686,28.28427 -25.10514,0 -45.45687,-12.6633 -45.45687,-28.28427 0,-15.62097 20.35173,-28.28427 45.45687,-28.28427 25.10513,0 45.45686,12.6633 45.45686,28.28427 z"
            sodipodi:ry="28.284271"
            sodipodi:rx="45.456863"
            sodipodi:cy="676.58545"
@@ -106,7 +106,7 @@
            sodipodi:type="arc" />
         <path
            transform="translate(-120.20815,31.314729)"
-           d="m 334.3605,681.63617 a 59.093925,46.467018 0 1 1 -118.18785,0 59.093925,46.467018 0 1 1 118.18785,0 z"
+           d="m 334.3605,681.63617 c 0,25.66302 -26.45726,46.46702 -59.09393,46.46702 -32.63667,0 -59.09392,-20.804 -59.09392,-46.46702 0,-25.66303 26.45725,-46.46702 59.09392,-46.46702 32.63667,0 59.09393,20.80399 59.09393,46.46702 z"
            sodipodi:ry="46.467018"
            sodipodi:rx="59.093925"
            sodipodi:cy="681.63617"
@@ -177,7 +177,7 @@
          sodipodi:cy="357.36218"
          sodipodi:rx="10"
          sodipodi:ry="10"
-         d="m 213.57143,357.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+         d="m 213.57143,357.36218 c 0,5.52285 -4.47716,10 -10,10 -5.52285,0 -10,-4.47715 -10,-10 0,-5.52284 4.47715,-10 10,-10 5.52284,0 10,4.47716 10,10 z"
          transform="matrix(0.61402381,0,0,0.59673703,32.67845,137.46621)"
          inkscape:export-filename="/home/sam/Nottingham/G54PRG_Programming/CWK/Colonise/src/ANTend.png"
          inkscape:export-xdpi="90"
@@ -190,7 +190,7 @@
          sodipodi:cy="357.36218"
          sodipodi:rx="10"
          sodipodi:ry="10"
-         d="m 213.57143,357.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+         d="m 213.57143,357.36218 c 0,5.52285 -4.47716,10 -10,10 -5.52285,0 -10,-4.47715 -10,-10 0,-5.52284 4.47715,-10 10,-10 5.52284,0 10,4.47716 10,10 z"
          transform="matrix(0.61402381,0,0,0.59673703,76.53731,138.74494)"
          inkscape:export-filename="/home/sam/Nottingham/G54PRG_Programming/CWK/Colonise/src/ANTend.png"
          inkscape:export-xdpi="90"
@@ -367,13 +367,14 @@
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:2.70000005;stroke-miterlimit:4;stroke-dasharray:none;font-family:Atari Font Full Version;-inkscape-font-specification:Atari Font Full Version"
-       x="205"
-       y="580.71429"
+       x="7.1428595"
+       y="568.57141"
        id="text4219"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4221"
-         x="205"
-         y="580.71429">START</tspan></text>
+         x="7.1428595"
+         y="568.57141"
+         style="font-size:32px">PRESS SPACE TO START</tspan></text>
   </g>
 </svg>
