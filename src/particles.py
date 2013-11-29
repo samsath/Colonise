@@ -40,8 +40,9 @@ class ant(pygame.sprite.Sprite):
         self.speed = 0.7
         self.owner = owner
         #self.show(pygame.color.THECOLORS["white"])
+        self.angle = 0
         self.show(picture)
-      
+        
     @property
     def pos(self):
         return self.x, self.y
@@ -62,9 +63,6 @@ class ant(pygame.sprite.Sprite):
 
     def set_target(self, pos):
         self.t_x, self.t_y = pos  
-        
-    def angle(self):
-        return degrees(atan2(self.t_y - self.y, self.t_x - self.x))     
 
     def update(self):
         # if we won't move, don't calculate new vectors
@@ -83,19 +81,20 @@ class ant(pygame.sprite.Sprite):
 
         # update position
         self.x, self.y = add(self.pos, move_vector)  
-                
+        
+        self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target
+               
         
     def show(self,c):
-        rot = pygame.transform.rotate(c, angle)
-        rotflip = pygame.transform.flip(rot, 1, 0)
-        window.blit(rotflip,self.int_pos)
+        rot = pygame.transform.rotate(c, self.angle) #rotate
+        rotflip = pygame.transform.flip(rot, 1, 0) #flip horizontally
+        window.blit(rotflip,self.int_pos) #add to background image
 
 pygame.init()
 window = pygame.display.set_mode(SIZE)
 window.fill(pygame.color.THECOLORS["black"])
 bg = pygame.image.load('grass.jpg').convert()
 insect = pygame.image.load('ant.png').convert_alpha()
-angle = 0
 ants = ant(1,insect)
 pygame.display.flip()
 
@@ -116,5 +115,4 @@ while True:
         (pygame.mouse.get_pos())
         print(pygame.mouse.get_pos())
         ants.set_target(pygame.mouse.get_pos())
-    angle = ants.angle() + 90
 pygame.quit()
