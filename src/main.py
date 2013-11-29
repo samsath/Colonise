@@ -415,7 +415,7 @@ class ants(Sprite):
             self.show(colour['bg-c']) # leaFleet Foxes - White Winter Hymnalves a trail
             newpos = [int(self.pos[0]+self.vel[0]),int(self.pos[1]+self.vel[1])]
             self.pos = newpos
-            self.show(colour[0])
+            self.show(colour[int(self.owner])
                             
         
 
