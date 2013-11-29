@@ -37,30 +37,38 @@ Logo= {"win":"WinScreen.png",
        "loss":"lossScreen.png",
        "Splash":"openScreen.png"}
 
-
+colony_num = [] # this keeps track of who owns what
 
 def mapload(lev):
     #open csv file for each level
+    # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
     cl = csv.reader(open(levels[lev],"rb"))
     for row in cl:
-        col = colony(window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])))
+        col = colony(window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
         colony_list.add(col)
+        colony_num.append(int(row[0])) #adds the item to the list
 
 def stop():    
     pygame.quit()
     
+def check(lst):
+    if len(set(lst)) == 1:
+        return lst[0]
+    else:
+        return 0
 
 class colony(Sprite):
     
     SIZE=(20,20)
     
-    def __init__(self, screen, pos, owner, limit):
+    def __init__(self, screen, pos, owner, limit, number):
         Sprite.__init__(self)
         self.screen = screen
         self.pos = pos
         self.owner = owner
         self.health = 10 # max 100
         self.inhab = 0
+        self.number = number
         self.state = False
         self.attack_limit = limit# this is for the amount of ant the colony should have before attack
         self.show()
@@ -115,6 +123,7 @@ class colony(Sprite):
 
         
     def update(self ,time_passed):
+        colony_num[self.number] = self.owner
         # possible add the enime AI here
         
         self.draw_select()
@@ -127,7 +136,7 @@ class colony(Sprite):
                 self.inhab += 1
             #owner 1 is user
             if self.owner >= 2:
-                while self.inhab >= 150: # not enough time to build up resistance = 15
+                while self.inhab >= self.attack_limit: # not enough time to build up resistance = 15
                     choose = randint(1,3)
                     if choose == 1:
                             #attack
@@ -137,6 +146,7 @@ class colony(Sprite):
                                     ant=ants(self.pos,(0,0),self.owner)
                                     ant.setdest(c.pos)
                                     ant_list.add(ant)
+                                    self.inhab -= 1
                     elif choose == 2:
                         # this will hopefully build up the army
                         break
@@ -148,9 +158,10 @@ class colony(Sprite):
                                 ant=ants(self.pos,(0,0),self.owner)
                                 ant.setdest(c.pos)
                                 ant_list.add(ant)
+                                self.inhab -= 1
                 
 
-      
+
     def draw_select(self):
         if self.owner == 1:
             sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
@@ -217,7 +228,8 @@ class ants(Sprite):
    
     def update(self,time_passed):
         if time_passed < 5:
-            # this works out the distance from the dest then if closer will orbit else move towards
+            # this works out the distance from the dest tfor c in colony_num:
+            #if hen if closer will orbit else move towards
             if hypot((self.pos[0]-self.dest[0]),(self.pos[1]-self.dest[1])) > 5:
                 #self.vel = self.ang2(self.dest,self.pos)
                 posangle = self.ang(self.dest,self.pos)
@@ -252,7 +264,7 @@ class ants(Sprite):
                 self.kill()
             
 
-            self.show(colour['bg-c']) # leaves a trail
+            self.show(colour['bg-c']) # leaFleet Foxes - White Winter Hymnalves a trail
             newpos = [int(self.pos[0]+self.vel[0]),int(self.pos[1]+self.vel[1])]
             self.pos = newpos
             self.show(colour[0])
@@ -287,7 +299,16 @@ insect = pygame.image.load('ant.png').convert_alpha()
 
 
 while True:
-
+    ch = check(colony_num)
+    if  ch > 0:
+        if ch == 1:
+            # you win
+            window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+        else:
+            # you loss
+            window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+        #new game
+        
     
     pygame.display.update()
     event = pygame.event.poll()
