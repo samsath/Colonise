@@ -7,7 +7,6 @@ from math import hypot,atan2, degrees, pi
 from random import randint
 
 import pygame
-import time
 from pygame.sprite import Sprite
 import csv
 
@@ -74,8 +73,9 @@ class game():
     def mapload(self,lev):
         '''
         This loads the level infomration from the csv and then displays it in the game
+        each level is a sepearate csv file. Is located in the src and referenced in the code at levels dictionary
         '''
-        print "load map"
+ 
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
         cl = csv.reader(open(levels[lev],"rb"))
@@ -102,6 +102,9 @@ class game():
         This is the main game loop for the pygame
         '''
         while True:
+            '''
+            Uses the check function to see if all the colony owners are the same and if so that owner wins, else the game continues
+            '''
             # Checks if there is a winner
             ch = self.check(colony_num)
             if  ch > 0:
@@ -137,7 +140,7 @@ class game():
             pygame.display.update()
             
             
-            # this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
+            # this is to allow the user input and control the game
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
@@ -172,27 +175,30 @@ class game():
 class colony(Sprite):
     '''
     This is the class for the collony so that we can create multiple one
+    The mapload function creates each one of these. 
     '''
     SIZE=(20,20)
-    healthmax = 10
+    healthmax = 10 # the max health of the collony
     
     def __init__(self,game, screen, pos, owner, limit, number):
         Sprite.__init__(self)
-        self.game = game
-        self.screen = screen
-        self.pos = pos
-        self.owner = owner
-        self.health = colony.healthmax # max 100
-        self.inhab = 0
-        self.number = number
-        self.state = False
+        self.game = game # makes sure it is part of the game class
+        self.screen = screen # the screen is the same on all classes
+        self.pos = pos # positon the x,y of the colony
+        self.owner = owner # what player controls that collony
+        self.health = colony.healthmax # max 10 
+        self.inhab = 0 # counts how many ants there are in the colony
+        self.number = number # what number it was created at  so it can be used in the game.check function to see if there are the winner
+        self.state = False # This see if there user has clicked and selected the colony
         self.attack_limit = limit# this is for the amount of ant the colony should have before attack
         self.show()
-        (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
+
   
     
     def healthcheck(self):
-        # Checks the health level of the colony and changes the colour of the health bar accordingly
+        '''
+        Checks the health level of the colony and changes the colour of the health bar accordingly
+        '''
         if self.health >= colony.healthmax/2:
             return colour["h1"]
         else:
@@ -256,7 +262,9 @@ class colony(Sprite):
         
         self.draw_select()
         self.show()
-        
+        ###################################################################################################
+        ##                                        AI PART                                                ##
+        ###################################################################################################
         #send the data and creates new ants
         if self.owner != 0:
             # if the colony isnt empty then it will do thing's else not
@@ -298,7 +306,7 @@ class colony(Sprite):
 
     def draw_select(self):
         '''
-        This makes the select square on the colony only if you own it 
+        This makes the select square on the colony only if you own it and right click on it
         '''
         if self.owner == 1:
             sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
@@ -343,14 +351,17 @@ class ants(Sprite):
 
     def __init__(self,game,pos,vel,owner):
         Sprite.__init__(self)
-        self.game = game
-        self.pos = pos
-        self.vel = vel
-        self.dest = [0,0]
-        self.owner = owner
-        self.show(colour[0])
+        self.game = game        # the game it is part of
+        self.pos = pos          # starting pos (X,y) of the ant
+        self.vel = vel          # the (x,Y) vel amount
+        self.dest = [0,0]       # the ideal destination for where the ant can go
+        self.owner = owner      # what player owns the ant
+        self.show(colour[int(self.owner)])    # creates the ant and sets the colour of it to the owners 
         
     def show(self,c):
+        '''
+        Creates the ant with the owners colour
+        '''
         pygame.draw.circle(window,c, self.pos,2)
         
     
@@ -364,15 +375,23 @@ class ants(Sprite):
         return degs
         
     def setdest(self,loc):
-        # this creates the destination for the ant to go to
-        #use math.hypot(x,y) this will get the distance between origin and dest
+        '''
+        This allows the collony to set the destination of the ant 
+        '''
         self.dest = loc
 
     def die(self):
+        '''
+        Kills the ant and del it so that can no longer effcer the game
+        '''
         self.game.ant_list.remove(self)
         del self
    
     def update(self,time_passed):
+        '''
+        This updates the possition of the ant by taking the vel from the pos.
+        With the posangle trying to get the ant as close as possible to the destination
+        '''
         if time_passed < 5:
             # this works out the distance from the dest tfor c in colony_num:
             #if hen if closer will orbit else move towards
@@ -420,7 +439,9 @@ class ants(Sprite):
         
 
 pygame.init()
-
+'''
+This bit is the splash / start screen so when the game starts you see it then you start it by clicking the space bar
+'''
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
