@@ -11,7 +11,7 @@ from pygame import K_SPACE
 from pygame.sprite import Sprite
 import csv
 
-SIZE=(600,600)
+SIZE=(600,600) # sets the size of the window
 
 colour = {0:pygame.color.THECOLORS["white"],
           1:pygame.color.THECOLORS["red"],
@@ -22,35 +22,41 @@ colour = {0:pygame.color.THECOLORS["white"],
           "h1":pygame.color.THECOLORS["green4"],
           "h2":pygame.color.THECOLORS["red"],
           "bg-c":(0,122,49,255),
-          } # change this bit to images maybe
+          } # loaded colours for the different elements and bg so can all be set easily
 
 levels = {1:"level1.csv",
-          2:"level2.csv"}
+          2:"level2.csv"} # list of levels as each level will be the a seperate csv file
 
 baseimage = {0:"Colony.png",
              1:"Colony1.png",
              2:"Colony2.png",
-             3:"Colony3.png"}
+             3:"Colony3.png"} # list of the images for the different colony objects
 
 Logo= {"win":"WinScreen.png",
        "loss":"lossScreen.png",
-       "Splash":"openScreen.png"}
+       "Splash":"openScreen.png"} # list of images for the different screens
 
 colony_num = [] # this keeps track of who owns what
 
 
 def stop():    
+    '''
+    When this is called it will close the program
+    '''
     pygame.quit()
     
 
 
 class game():
+    '''
+    This replaces the While loop at the end of the file, so that Have more control over the game process
+    with this being the main process now.
+    '''
     def __init__(self,level):
+        #interlise all the required items for the game to run
         self.level = level
         
-        
         self.clock = pygame.time.Clock()
-        
         self.ant_tick = 0
         self.col_tick = 0
         
@@ -58,13 +64,17 @@ class game():
         self.colony_list = pygame.sprite.Group()
         self.ant_list = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group()
-        self.state = "play" # play, new, exit
+        self.state = "play" # play, new, exit # The state is here so that we can control the player interaction as well to restart the game
         
     def start(self):
+        #this will be called after the splash screen goes away so the game will start
         self.mapload(self.level)
         self.loop()
     
     def mapload(self,lev):
+        '''
+        This loads the level infomration from the csv and then displays it in the game
+        '''
         print "load map"
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
@@ -78,14 +88,21 @@ class game():
         window.blit(bg_img,(0,0,600,600))
             
     def check(self,lst):
+        '''
+        This checks if there is a winner or not
+        As it keeps track of what colonies are ownered by what player. If all ownered by the one player then they win.
+        '''
         if len(set(lst)) == 1:
             return lst[0]
         else:
             return 0
             
     def loop(self):
+        '''
+        This is the main game loop for the pygame
+        '''
         while True:
-            
+            # Checks if there is a winner
             ch = self.check(colony_num)
             if  ch > 0:
                 if ch == 1:
@@ -99,6 +116,7 @@ class game():
                     self.state = "new"
                 #new game  
                 
+            # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate    
             self.clock.tick()
             elapsed = self.clock.tick(25)
             
@@ -118,6 +136,8 @@ class game():
                 
             pygame.display.update()
             
+            
+            # this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
@@ -138,6 +158,9 @@ class game():
                     c._mouseClickRight(pygame.mouse.get_pos())
                     
     def end(self):
+        '''
+        Once some one wins this will wipe the current game and start a new one
+        '''
         for a in self.ant_list:
             self.ant_list.remove(a)
         for c in self.colony_list:
@@ -147,7 +170,9 @@ class game():
 
 
 class colony(Sprite):
-    
+    '''
+    This is the class for the collony so that we can create multiple one
+    '''
     SIZE=(20,20)
     
     def __init__(self,game, screen, pos, owner, limit, number):
@@ -166,12 +191,16 @@ class colony(Sprite):
   
     
     def healthcheck(self):
+        # Checks the health level of the colony and changes the colour of the health bar accordingly
         if self.health >= 5:
             return colour["h1"]
         else:
             return colour["h2"]
     
     def show(self):
+        '''
+        This displays all the information of the colony onto the screen
+        '''
         colimage = pygame.image.load(baseimage[self.owner]).convert_alpha()
         
         #aim is to display the health bar
@@ -194,6 +223,9 @@ class colony(Sprite):
        
             
     def collide(self,ant):
+        '''
+        When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
+        '''
         #print str(self.owner) + ", Collided with ant " + str(ant.owner)
         if ant.owner != self.owner:
             if self.health <= 1:
@@ -213,6 +245,11 @@ class colony(Sprite):
 
         
     def update(self ,time_passed):
+        '''
+        This updates the colony and controls it.
+        Here is where the AI is for the game so play has someone to play against
+        '''
+        
         colony_num[self.number] = self.owner
         # possible add the enime AI here
         
@@ -256,6 +293,9 @@ class colony(Sprite):
 
 
     def draw_select(self):
+        '''
+        This makes the select square on the colony only if you own it 
+        '''
         if self.owner == 1:
             sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
             if self.state == True:
@@ -268,6 +308,9 @@ class colony(Sprite):
             self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         
     def _mouseClickRight(self,mouspos):    
+        '''
+        What happens to the collony when the button is clicked = Select the collony
+        '''
 
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0]*2 :
             if self.owner == 1:
@@ -277,15 +320,18 @@ class colony(Sprite):
                     self.state = False
     
     def _mouseClickLeft(self,mouspos):
+        '''
+        What happens to the collony when the button is clicked = Send ants inhabiting the collony there
+        '''
 
-            if self.state == True:
-                #if self.inhab > 0:
-                if self.inhab > 0:
-                    #create ant when needed  then send it to location
-                    ant=ants(self.game,self.pos,(0,0),self.owner)
-                    ant.setdest(mouspos)
-                    self.game.ant_list.add(ant)
-                    self.inhab -= 1
+        if self.state == True:
+            #if self.inhab > 0:
+            if self.inhab > 0:
+                #create ant when needed  then send it to location
+                ant=ants(self.game,self.pos,(0,0),self.owner)
+                ant.setdest(mouspos)
+                self.game.ant_list.add(ant)
+                self.inhab -= 1
     
 
      
@@ -305,7 +351,9 @@ class ants(Sprite):
         
     
     def ang(self,pos1,pos2):
-
+        '''
+        This produces the angle needed to work out its direction it needs to go
+        '''
         rads = atan2(-(pos2[1]-pos1[1]),(pos2[0]-pos1[0]))
         rads %= 2*pi
         degs = degrees(rads)
@@ -328,7 +376,7 @@ class ants(Sprite):
                 #self.vel = self.ang2(self.dest,self.pos)
                 posangle = self.ang(self.dest,self.pos)
                 
-                #old stuff
+                #gets the velocity from the angle produced
                 if posangle > 0 and posangle < 90:
                     self.vel = [-1,1]
                 elif posangle > 90 and posangle < 180:
@@ -346,7 +394,9 @@ class ants(Sprite):
                 elif posangle == 270:
                     self.vel = [-1,0] 
             else:
-                
+                '''
+                This goes through the location of the ant when it stops to see if there is a collony there and if so runs that collonies collide code
+                '''
                 for c in self.game.colony_list:
 
                     if hypot((c.pos[0]-self.pos[0]),(c.pos[1]-self.pos[1])) <= 20:
