@@ -33,7 +33,7 @@ def normalize(v):
 
 
 class ant(pygame.sprite.Sprite):
-    orbit = 0
+    
     def __init__(self,owner,picture):
         self.x, self.y = (0,0)
         self.set_target((0, 0))
