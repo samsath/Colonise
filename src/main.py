@@ -1,14 +1,13 @@
 '''
-This is to try and get the rest of the program to work
-while ant doesn't
+This is to try and get the splash screen and levels to work
 '''
-
 
 from __future__ import division
 from math import hypot,atan2, degrees, pi
 from random import randint
 
 import pygame
+from pygame import K_SPACE
 from pygame.sprite import Sprite
 import csv
 
@@ -39,33 +38,121 @@ Logo= {"win":"WinScreen.png",
 
 colony_num = [] # this keeps track of who owns what
 
-levelreached = 1
-game = False # to play the splash
-
-def mapload(lev):
-    #open csv file for each level
-    # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
-    cl = csv.reader(open(levels[lev],"rb"))
-    for row in cl:
-        col = colony(window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
-        colony_list.add(col)
-        colony_num.append(int(row[0])) #adds the item to the list
 
 def stop():    
     pygame.quit()
     
-def check(lst):
-    if len(set(lst)) == 1:
-        return lst[0]
-    else:
-        return 0
+
+
+class game():
+    def __init__(self,level):
+        self.level = level
+        
+        
+        self.clock = pygame.time.Clock()
+        
+        self.ant_tick = 0
+        self.col_tick = 0
+        
+        ###### list of all the sprite groups
+        self.colony_list = pygame.sprite.Group()
+        self.ant_list = pygame.sprite.Group()
+        self.all_sprite_list = pygame.sprite.Group()
+        self.state = "play" # play, new, exit
+        
+    def start(self):
+        self.mapload(self.level)
+        self.loop()
+    
+    def mapload(self,lev):
+        print "load map"
+        #open csv file for each level
+        # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
+        cl = csv.reader(open(levels[lev],"rb"))
+        for row in cl:
+            col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
+            self.colony_list.add(col)
+            colony_num.append(int(row[0])) #adds the item to the list
+        self.state = "play"
+        bg_img = pygame.image.load("grass.jpg").convert()
+        window.blit(bg_img,(0,0,600,600))
+            
+    def check(self,lst):
+        if len(set(lst)) == 1:
+            return lst[0]
+        else:
+            return 0
+            
+    def loop(self):
+        while True:
+            
+            ch = self.check(colony_num)
+            if  ch > 0:
+                if ch == 1:
+                    # you win
+                    window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+                    self.level += 1
+                    self.state = "new"
+                else:
+                    # you loss
+                    window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+                    self.state = "new"
+                #new game  
+                
+            self.clock.tick()
+            elapsed = self.clock.tick(25)
+            
+            self.ant_tick += elapsed
+            self.col_tick += elapsed
+            if self.ant_tick > 25:
+                self.ant_tick = 0
+            if self.col_tick > 1000:
+                self.col_tick = 0 
+        
+            for a in self.ant_list:
+                a.update(self.ant_tick)    
+                
+            
+            for c in self.colony_list: 
+                c.update(self.col_tick)
+                
+            pygame.display.update()
+            
+            event = pygame.event.poll()
+            
+            if event.type == pygame.QUIT:
+                stop()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                print "button 1"
+                if self.state == "play":
+                    for c in self.colony_list:
+                        c._mouseClickLeft(pygame.mouse.get_pos())
+                elif self.state == "new":
+                    self.end()
+                elif self.state =="end":
+                    stop()
+                    
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                print "button 2"
+                for c in self.colony_list:
+                    c._mouseClickRight(pygame.mouse.get_pos())
+                    
+    def end(self):
+        for a in self.ant_list:
+            self.ant_list.remove(a)
+        for c in self.colony_list:
+            self.colony_list.remove(c)
+        self.mapload(self.level)
+
+
 
 class colony(Sprite):
     
     SIZE=(20,20)
     
-    def __init__(self, screen, pos, owner, limit, number):
+    def __init__(self,game, screen, pos, owner, limit, number):
         Sprite.__init__(self)
+        self.game = game
         self.screen = screen
         self.pos = pos
         self.owner = owner
@@ -143,12 +230,12 @@ class colony(Sprite):
                     choose = randint(1,3)
                     if choose == 1:
                             #attack
-                            for c in colony_list:
+                            for c in self.game.colony_list:
                                 if c.owner != self.owner:
                                     #this will send them there
-                                    ant=ants(self.pos,(0,0),self.owner)
+                                    ant=ants(self.game,self.pos,(0,0),self.owner)
                                     ant.setdest(c.pos)
-                                    ant_list.add(ant)
+                                    self.game.ant_list.add(ant)
                                     self.inhab -= 1
                     elif choose == 2:
                         #turns an ant to a health
@@ -158,12 +245,12 @@ class colony(Sprite):
                         break
                     elif choose == 3:
                         #move to other same collony
-                        for c in colony_list:
+                        for c in self.game.colony_list:
                             if c.owner == self.owner:
                                 #this will send them there
-                                ant=ants(self.pos,(0,0),self.owner)
+                                ant=ants(self.game,self.pos,(0,0),self.owner)
                                 ant.setdest(c.pos)
-                                ant_list.add(ant)
+                                self.game.ant_list.add(ant)
                                 self.inhab -= 1
                 
 
@@ -195,17 +282,18 @@ class colony(Sprite):
                 #if self.inhab > 0:
                 if self.inhab > 0:
                     #create ant when needed  then send it to location
-                    ant=ants(self.pos,(0,0),self.owner)
+                    ant=ants(self.game,self.pos,(0,0),self.owner)
                     ant.setdest(mouspos)
-                    ant_list.add(ant)
+                    self.game.ant_list.add(ant)
                     self.inhab -= 1
     
 
      
 class ants(Sprite):
 
-    def __init__(self,pos,vel,owner):
+    def __init__(self,game,pos,vel,owner):
         Sprite.__init__(self)
+        self.game = game
         self.pos = pos
         self.vel = vel
         self.dest = [0,0]
@@ -229,7 +317,7 @@ class ants(Sprite):
         self.dest = loc
 
     def die(self):
-        ant_list.remove(self)
+        self.game.ant_list.remove(self)
         del self
    
     def update(self,time_passed):
@@ -259,7 +347,7 @@ class ants(Sprite):
                     self.vel = [-1,0] 
             else:
                 
-                for c in colony_list:
+                for c in self.game.colony_list:
 
                     if hypot((c.pos[0]-self.pos[0]),(c.pos[1]-self.pos[1])) <= 20:
 
@@ -278,79 +366,16 @@ class ants(Sprite):
         
 
 pygame.init()
-ant_tick = 0
-col_tick = 0
-
-###### list of all the sprite groups
-colony_list = pygame.sprite.Group()
-ant_list = pygame.sprite.Group()
-all_sprite_list = pygame.sprite.Group()
 
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 
+games = game(1)
+bg_start = pygame.image.load("openScreen.png")
+window.blit(bg_start,(0,0,600,600))
+pygame.display.flip()
+# need to add something here to make it start
+if pygame.key.get_pressed()[K_SPACE]:
+    games.start()
 
-
-#####Produce the map
-mapload(1) ## this will be a funtion to load a file(.csv) and set the colong info to it
-
-
-
-clock = pygame.time.Clock()
-
-insect = pygame.image.load('ant.png').convert_alpha()
-
-
-
-
-while True:
-    if game == True:
-        bg_img = pygame.image.load("grass.jpg").convert()
-        window.blit(bg_img,(0,0,600,600))
-        ch = check(colony_num)
-        if  ch > 0:
-            if ch == 1:
-                # you win
-                window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                levelreached += 1
-            else:
-                # you loss
-                window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
-            #new game
-            
-        clock.tick()
-        elapsed = clock.tick(25)
-        
-        ant_tick += elapsed
-        col_tick += elapsed
-        if ant_tick > 25:
-            ant_tick = 0
-        if col_tick > 1000:
-            col_tick = 0 
-    
-        for a in ant_list:
-            a.update(ant_tick)    
-            
-        
-        for c in colony_list: 
-            c.update(col_tick)
-    else:
-            window.blit(pygame.image.load(Logo["Splash"]).convert(), (0,0,600,600))
-         
-    pygame.display.update()
-    event = pygame.event.poll()
-           
-    if event.type == pygame.QUIT:
-        stop()
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        if game == True:
-            for c in colony_list:
-                c._mouseClickLeft(pygame.mouse.get_pos())
-            else:
-                
-                game = True
-                print game
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-        for c in colony_list:
-            c._mouseClickRight(pygame.mouse.get_pos())
