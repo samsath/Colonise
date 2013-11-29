@@ -1,0 +1,6 @@
+For the ants, was thinking if we set __init__ with position , destination and owner. 
+Then with the update work out the difference between the position and destination and 
+use that to move them all at a constant speed. As well when they get to the destination
+ and don't die/adsorbed they orbit around the destination. This will be for any mouse 
+ click no matter where it is.
+  
