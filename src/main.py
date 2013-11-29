@@ -142,7 +142,7 @@ class game():
             if event.type == pygame.QUIT:
                 stop()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                print "button 1"
+                
                 if self.state == "play":
                     for c in self.colony_list:
                         c._mouseClickLeft(pygame.mouse.get_pos())
@@ -152,7 +152,7 @@ class game():
                     stop()
                     
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                print "button 2"
+               
                 for c in self.colony_list:
                     c._mouseClickRight(pygame.mouse.get_pos())
                     
