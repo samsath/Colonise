@@ -7,6 +7,7 @@ from math import hypot,atan2, degrees, pi
 from random import randint
 
 import pygame
+import time
 from pygame.sprite import Sprite
 import csv
 
@@ -173,6 +174,7 @@ class colony(Sprite):
     This is the class for the collony so that we can create multiple one
     '''
     SIZE=(20,20)
+    healthmax = 10
     
     def __init__(self,game, screen, pos, owner, limit, number):
         Sprite.__init__(self)
@@ -180,7 +182,7 @@ class colony(Sprite):
         self.screen = screen
         self.pos = pos
         self.owner = owner
-        self.health = 10 # max 100
+        self.health = colony.healthmax # max 100
         self.inhab = 0
         self.number = number
         self.state = False
@@ -191,7 +193,7 @@ class colony(Sprite):
     
     def healthcheck(self):
         # Checks the health level of the colony and changes the colour of the health bar accordingly
-        if self.health >= 5:
+        if self.health >= colony.healthmax/2:
             return colour["h1"]
         else:
             return colour["h2"]
@@ -205,7 +207,7 @@ class colony(Sprite):
         #aim is to display the health bar
         healthbg = pygame.Surface((((colony.SIZE[0]-4)*2), 10),pygame.SRCALPHA)
         healthbg.fill(colour["ht"])
-        healthbar = pygame.Surface((((((colony.SIZE[0]-5)*2)/10)*self.health), 7),pygame.SRCALPHA)
+        healthbar = pygame.Surface((((((colony.SIZE[0]-5)*2)/colony.healthmax)*self.health), 7),pygame.SRCALPHA)
         healthbar.fill(self.healthcheck())
         font = pygame.font.Font(None,30)
         text_suf = font.render(str(self.inhab), 1, colour["ht"])
@@ -269,10 +271,12 @@ class colony(Sprite):
                             for c in self.game.colony_list:
                                 if c.owner != self.owner:
                                     #this will send them there
-                                    ant=ants(self.game,self.pos,(0,0),self.owner)
-                                    ant.setdest(c.pos)
-                                    self.game.ant_list.add(ant)
-                                    self.inhab -= 1
+                                    for a in xrange(randint(0,self.inhab)):
+                                        if time_passed < 10:
+                                            a=ants(self.game,self.pos,(0,0),self.owner)
+                                            a.setdest(c.pos)
+                                            self.game.ant_list.add(a)
+                                            self.inhab -= 1
                     elif choose == 2:
                         #turns an ant to a health
                         if self.health != 10:
@@ -283,11 +287,12 @@ class colony(Sprite):
                         #move to other same collony
                         for c in self.game.colony_list:
                             if c.owner == self.owner:
-                                #this will send them there
-                                ant=ants(self.game,self.pos,(0,0),self.owner)
-                                ant.setdest(c.pos)
-                                self.game.ant_list.add(ant)
-                                self.inhab -= 1
+                                for a in xrange(randint(0,10)):
+                                    if time_passed < 10:
+                                        a=ants(self.game,self.pos,(0,0),self.owner)
+                                        a.setdest(c.pos)
+                                        self.game.ant_list.add(a)
+                                        self.inhab -= 1
                 
 
 
@@ -420,7 +425,7 @@ pygame.init()
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 
-games = game(1)
+games = game(2)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
