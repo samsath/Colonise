@@ -283,6 +283,8 @@ all_sprite_list = pygame.sprite.Group()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
+icon = pygame.image.load('icon.png').convert()
+pygame.display.set_icon(icon)
 bg_img = pygame.image.load("grass.jpg").convert()
 window.blit(bg_img,(0,0,600,600))
 
