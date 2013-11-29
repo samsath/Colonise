@@ -3,6 +3,7 @@ This is to try and get the splash screen and levels to work
 '''
 
 from __future__ import division
+import math
 from math import hypot,atan2, degrees, pi
 from random import randint
 
@@ -45,7 +46,23 @@ def stop():
     '''
     pygame.quit()
     
+'''VECTOR FUNCTIONS'''
+# some simple vector helper functions from http://stackoverflow.com/a/4114962/142637
+def magnitude(v):
+    return math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
 
+def add(u, v):
+    return [ u[i]+v[i] for i in range(len(u)) ]
+
+def sub(u, v):
+    return [ u[i]-v[i] for i in range(len(u)) ]    
+
+def dot(u, v):
+    return sum(u[i]*v[i] for i in range(len(u)))
+
+def normalize(v):
+    vmag = magnitude(v)
+    return [ v[i]/vmag  for i in range(len(v)) ]
 
 class game():
     '''
@@ -273,8 +290,8 @@ class colony(Sprite):
                                     #this will send them there
                                     for a in xrange(randint(0,self.inhab)):
                                         if time_passed < 10:
-                                            a=ants(self.game,self.pos,(0,0),self.owner)
-                                            a.setdest(c.pos)
+                                            a=ants(self.game,self.pos,insect,self.owner)
+                                            a.set_target(c.pos)
                                             self.game.ant_list.add(a)
                                             self.inhab -= 1
                     elif choose == 2:
@@ -289,8 +306,8 @@ class colony(Sprite):
                             if c.owner == self.owner:
                                 for a in xrange(randint(0,10)):
                                     if time_passed < 10:
-                                        a=ants(self.game,self.pos,(0,0),self.owner)
-                                        a.setdest(c.pos)
+                                        a=ants(self.game,self.pos,insect,self.owner)
+                                        a.set_target(c.pos)
                                         self.game.ant_list.add(a)
                                         self.inhab -= 1
                 
@@ -332,8 +349,8 @@ class colony(Sprite):
             #if self.inhab > 0:
             if self.inhab > 0:
                 #create ant when needed  then send it to location
-                ant=ants(self.game,self.pos,(0,0),self.owner)
-                ant.setdest(mouspos)
+                ant=ants(self.game,self.pos,insect,self.owner)
+                ant.set_target(mouspos)
                 self.game.ant_list.add(ant)
                 self.inhab -= 1
     
@@ -341,32 +358,41 @@ class colony(Sprite):
      
 class ants(Sprite):
 
-    def __init__(self,game,pos,vel,owner):
+    def __init__(self,game,pos,picture,owner):
         Sprite.__init__(self)
         self.game = game
-        self.pos = pos
-        self.vel = vel
-        self.dest = [0,0]
+        self.x, self.y = pos
+        self.set_target((0, 0))
+        self.speed = 0.7
         self.owner = owner
-        self.show(colour[0])
+        self.angle = 0
+        self.show(picture)
         
     def show(self,c):
-        pygame.draw.circle(window,c, self.pos,2)
+        rot = pygame.transform.rotate(c, self.angle) #rotate
+        rotflip = pygame.transform.flip(rot, 1, 0) #flip horizontally
+        window.blit(rotflip,self.int_pos) #add to background image
         
-    
-    def ang(self,pos1,pos2):
-        '''
-        This produces the angle needed to work out its direction it needs to go
-        '''
-        rads = atan2(-(pos2[1]-pos1[1]),(pos2[0]-pos1[0]))
-        rads %= 2*pi
-        degs = degrees(rads)
-        return degs
+    @property
+    def pos(self):
+        return self.x, self.y
+
+    # for drawing, we need the position as tuple of ints
+    # so lets create a helper property
+    @property
+    def int_pos(self):
+        return map(int, self.pos)
+
+    @property
+    def target(self):
+        return self.t_x, self.t_y
+
+    @property
+    def int_target(self):
+        return map(int, self.target)
         
-    def setdest(self,loc):
-        # this creates the destination for the ant to go to
-        #use math.hypot(x,y) this will get the distance between origin and dest
-        self.dest = loc
+    def set_target(self, pos):
+        self.t_x, self.t_y = pos 
 
     def die(self):
         self.game.ant_list.remove(self)
@@ -374,48 +400,35 @@ class ants(Sprite):
    
     def update(self,time_passed):
         if time_passed < 5:
-            # this works out the distance from the dest tfor c in colony_num:
-            #if hen if closer will orbit else move towards
-            if hypot((self.pos[0]-self.dest[0]),(self.pos[1]-self.dest[1])) > 5:
-                #self.vel = self.ang2(self.dest,self.pos)
-                posangle = self.ang(self.dest,self.pos)
-                
-                #gets the velocity from the angle produced
-                if posangle > 0 and posangle < 90:
-                    self.vel = [-1,1]
-                elif posangle > 90 and posangle < 180:
-                    self.vel = [1,1]
-                elif posangle > 180 and posangle < 270:
-                    self.vel = [1,-1]
-                elif posangle > 270 and posangle < 360:
-                    self.vel = [-1,-1]
-                elif posangle == 0:
-                    self.vel = [0,1]
-                elif posangle == 90:
-                    self.vel = [1,0]
-                elif posangle == 180:
-                    self.vel = [0,-1]
-                elif posangle == 270:
-                    self.vel = [-1,0] 
-            else:
-                '''
-                This goes through the location of the ant when it stops to see if there is a collony there and if so runs that collonies collide code
-                '''
-                for c in self.game.colony_list:
-
-                    if hypot((c.pos[0]-self.pos[0]),(c.pos[1]-self.pos[1])) <= 20:
-
-                        c.collide(self)
-                        
-                    else:
-                        pass
-                self.kill()
             
+            if self.int_pos == self.int_target:
+                return 
 
-            self.show(colour['bg-c']) # leaFleet Foxes - White Winter Hymnalves a trail
-            newpos = [int(self.pos[0]+self.vel[0]),int(self.pos[1]+self.vel[1])]
-            self.pos = newpos
-            self.show(colour[int(self.owner)])
+            target_vector = sub(self.target, self.pos) 
+
+            # a threshold to stop moving if the distance is to small.
+            # it prevents a 'flickering' between two points
+            if magnitude(target_vector) < 2: 
+                return
+
+            # apply the ship's speed to the vector
+            move_vector = [c * self.speed for c in normalize(target_vector)]
+
+            # update position
+            self.x, self.y = add(self.pos, move_vector)  
+            
+            self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
+            #This goes through the location of the ant when it stops to see if there is a collony there
+            for c in self.game.colony_list: # and if so runs that collonies collide code
+                if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
+                    c.collide(self)  
+                    self.kill()                      
+                else:
+                    pass
+            
+            #print self.x, self.y
+
+            self.show(insect)            
                             
         
 
@@ -424,7 +437,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-
+insect = pygame.image.load('ant.png').convert_alpha()
 games = game(2)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
