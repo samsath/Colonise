@@ -7,7 +7,6 @@ from math import hypot,atan2, degrees, pi
 from random import randint
 
 import pygame
-from pygame import K_SPACE
 from pygame.sprite import Sprite
 import csv
 
@@ -425,7 +424,10 @@ games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
-# need to add something here to make it start
-if pygame.key.get_pressed()[K_SPACE]:
-    games.start()
+
+while True:
+    # when clicked it will start the game running
+    if pygame.event.poll().type==pygame.KEYDOWN:
+        print "clicked"
+        games.start()
 
