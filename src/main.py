@@ -236,6 +236,7 @@ class colony(Sprite):
         #print str(self.owner) + ", Collided with ant " + str(ant.owner)
         if ant.owner != self.owner:
             if self.health <= 1:
+                self.state = False
                 self.owner = ant.owner
                 self.health = 1
             else:
@@ -308,16 +309,17 @@ class colony(Sprite):
         '''
         This makes the select square on the colony only if you own it and right click on it
         '''
+        sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
         if self.owner == 1:
-            sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
             if self.state == True:
                 ucolour = list(colour[self.owner])
                 ucolour[3]=255
                 sel.fill(ucolour)
             else:
                 sel.fill((0,122,49,255))
-                
-            self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
+        else:
+            sel.fill((0,122,49,255))
+        self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         
     def _mouseClickRight(self,mouspos):    
         '''
