@@ -269,40 +269,40 @@ class colony(Sprite):
         #send the data and creates new ants
         if self.owner != 0:
             # if the colony isnt empty then it will do thing's else not
+            
             if time_passed < 5:
                 self.inhab += 1
-            #owner 1 is user
-            if self.owner >= 2:
-                while self.inhab >= self.attack_limit: # not enough time to build up resistance = 15
-                    choose = randint(1,3)
-                    if choose == 1:
-                            #attack
-                            for c in self.game.colony_list:
-                                if c.owner != self.owner:
-                                    #this will send them there
-                                    for a in xrange(randint(0,self.inhab)):
-                                        if time_passed < 10:
-                                            a=ants(self.game,self.pos,(0,0),self.owner)
-                                            a.setdest(c.pos)
-                                            self.game.ant_list.add(a)
-                                            self.inhab -= 1
-                    elif choose == 2:
-                        #turns an ant to a health
-                        if self.health != 10:
-                            self.inhab -= 1
-                            self.health += 1
-                        break
-                    elif choose == 3:
-                        #move to other same collony
-                        for c in self.game.colony_list:
-                            if c.owner == self.owner:
-                                for a in xrange(randint(0,10)):
-                                    if time_passed < 10:
-                                        a=ants(self.game,self.pos,(0,0),self.owner)
-                                        a.setdest(c.pos)
-                                        self.game.ant_list.add(a)
-                                        self.inhab -= 1
-                
+                #owner 1 is user
+                if self.owner >= 2:
+                    for a in xrange(randint(0,self.inhab)):
+                        while self.inhab >= self.attack_limit: # not enough time to build up resistance = 15
+                            choose = randint(1,3)
+                            if choose == 1:
+                                    #attack
+                                    for c in self.game.colony_list:
+                                        if c.owner != self.owner:
+                                            #this will send them there
+    
+                                                    a=ants(self.game,self.pos,(0,0),self.owner)
+                                                    a.setdest(c.pos)
+                                                    self.game.ant_list.add(a)
+                                                    self.inhab -= 1
+                            elif choose == 2:
+                                #turns an ant to a health
+                                if self.health != 10:
+                                    self.inhab -= 1
+                                    self.health += 1
+                                break
+                            elif choose == 3:
+                                #move to other same collony
+                                for c in self.game.colony_list:
+                                    if c.owner == self.owner:
+                                            if time_passed < 10:
+                                                a=ants(self.game,self.pos,(0,0),self.owner)
+                                                a.setdest(c.pos)
+                                                self.game.ant_list.add(a)
+                                                self.inhab -= 1
+                        
 
 
     def draw_select(self):
@@ -316,9 +316,9 @@ class colony(Sprite):
                 ucolour[3]=255
                 sel.fill(ucolour)
             else:
-                sel.fill((0,122,49,255))
+                sel.fill(colour["bg-c"])
         else:
-            sel.fill((0,122,49,255))
+            sel.fill(colour["bg-c"])
         self.screen.blit(sel,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         
     def _mouseClickRight(self,mouspos):    
