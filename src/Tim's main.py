@@ -93,7 +93,12 @@ class game():
         print "load map"
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
-        cl = csv.reader(open(levels[lev],"rb"))
+        try:
+            cl = csv.reader(open(levels[lev],"rb"))
+        except IOError:
+            # display you win the game image
+            pass
+        
         for row in cl:
             col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
             self.colony_list.add(col)
