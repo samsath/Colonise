@@ -97,7 +97,9 @@ class game():
             cl = csv.reader(open(levels[lev],"rb"))
         except IOError:
             # display you win the game image
-            pass
+            bg_vict = pygame.image.load("openScreen.png")
+            window.blit(bg_vict,(0,0,600,600))
+            pygame.display.flip()
         
         for row in cl:
             col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
@@ -426,7 +428,7 @@ window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 #insect = pygame.image.load('ant.png').convert_alpha()
 games = game(2)
-bg_start = pygame.image.load("openScreen.png")
+bg_start = pygame.image.load(Logo["Splash"])
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
