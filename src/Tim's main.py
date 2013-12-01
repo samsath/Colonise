@@ -145,7 +145,9 @@ class game():
                 self.col_tick = 0 
         
             for a in self.ant_list:
-                a.update(self.ant_tick)
+                print self.ant_list
+                a.update()
+                print self.ant_list
             
             for c in self.colony_list: 
                 c.update(self.col_tick)
@@ -404,38 +406,38 @@ class ants(Sprite):
         self.game.ant_list.remove(self)
         del self
    
-    def update(self,time_passed):
+    def update(self):
         #print 'time passed', time_passed
-        if time_passed < 5:
+        
             
-            if self.int_pos == self.int_target:
-                return 
+        if self.int_pos == self.int_target:
+            return 
+            print 'same'
+        target_vector = sub(self.target, self.pos) 
 
-            target_vector = sub(self.target, self.pos) 
+        # a threshold to stop moving if the distance is to small.
+        # it prevents a 'flickering' between two points
+        if magnitude(target_vector) < 2: 
+            return
 
-            # a threshold to stop moving if the distance is to small.
-            # it prevents a 'flickering' between two points
-            if magnitude(target_vector) < 2: 
-                return
+        # apply the ship's speed to the vector
+        move_vector = [c * self.speed for c in normalize(target_vector)]
 
-            # apply the ship's speed to the vector
-            move_vector = [c * self.speed for c in normalize(target_vector)]
+        # update position
+        self.x, self.y = add(self.pos, move_vector)  
+        print self.x, self.y
+        
+        self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
+        #This goes through the location of the ant when it stops to see if there is a collony there
+        for c in self.game.colony_list: # and if so runs that collonies collide code
+            if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
+                c.collide(self)  
+                                     
+            else:
+                pass
+        #self.kill() <<<<<------- THIS WAS THE CAUSE OF ALL PROBLEMS
 
-            # update position
-            self.x, self.y = add(self.pos, move_vector)  
-            print self.x, self.y
-            
-            self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
-            #This goes through the location of the ant when it stops to see if there is a collony there
-            for c in self.game.colony_list: # and if so runs that collonies collide code
-                if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
-                    c.collide(self)  
-                    self.kill()                      
-                else:
-                    pass
-            
-
-            self.show(self.image)            
+        self.show(self.image)            
                             
         
 
