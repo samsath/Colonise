@@ -413,8 +413,8 @@ class ants(Sprite):
         self.show(self.image,False) 
         #print 'time passed', time_passed
         
-            
-        if self.int_pos == self.int_target:
+        #This goes through the location of the ant when it stops to see if there is a collony there
+        if hypot ((self.int_pos[0]-self.int_target[0]),(self.int_pos[1]-self.int_target[1])) <=5:
             for c in self.game.colony_list: # and if so runs that collonies collide code
                 if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
                     c.collide(self) 
@@ -437,6 +437,8 @@ class ants(Sprite):
         #print self.x, self.y
         
         self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
+
+        #This goes through the location of the ant when it stops to see if there is a collony there
         #This goes through the location of the ant when it stops to see if there is a collony there
 
         self.show(self.image,True)            
