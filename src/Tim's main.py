@@ -414,7 +414,7 @@ class ants(Sprite):
         #print 'time passed', time_passed
         
             
-        if self.int_pos == self.int_target:
+        if hypot ((self.int_pos[0]-self.int_target[0]),(self.int_pos[1]-self.int_target[1])) <=5:
             for c in self.game.colony_list: # and if so runs that collonies collide code
                 if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
                     c.collide(self) 
