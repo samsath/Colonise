@@ -145,9 +145,8 @@ class game():
                 self.col_tick = 0 
         
             for a in self.ant_list:
-                print self.ant_list
                 a.update()
-                print self.ant_list
+               
             
             for c in self.colony_list: 
                 c.update(self.col_tick)
@@ -246,6 +245,7 @@ class colony(Sprite):
         When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
         '''
         #print str(self.owner) + ", Collided with ant " + str(ant.owner)
+        print 'COLLIDED'
         if ant.owner != self.owner:
             if self.health <= 1:
                 self.state = False
@@ -370,7 +370,6 @@ class ants(Sprite):
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()
-        #self.show(self.image)
         
         
     def show(self,c,image):
@@ -407,6 +406,7 @@ class ants(Sprite):
 
     def die(self):
         self.game.ant_list.remove(self)
+        print 'KILLED MYSELF'
         del self
    
     def update(self):
@@ -415,8 +415,13 @@ class ants(Sprite):
         
             
         if self.int_pos == self.int_target:
-            return 
-            print 'same'
+            for c in self.game.colony_list: # and if so runs that collonies collide code
+                if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
+                    c.collide(self) 
+                else:
+                    self.die()
+                    
+                    
         target_vector = sub(self.target, self.pos) 
 
         # a threshold to stop moving if the distance is to small.
@@ -429,16 +434,16 @@ class ants(Sprite):
 
         # update position
         self.x, self.y = add(self.pos, move_vector)  
-        print self.x, self.y
+        #print self.x, self.y
         
         self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
         #This goes through the location of the ant when it stops to see if there is a collony there
-        for c in self.game.colony_list: # and if so runs that collonies collide code
+        '''for c in self.game.colony_list: # and if so runs that collonies collide code
             if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
                 c.collide(self)  
                                      
             else:
-                pass
+                pass'''
 
         self.show(self.image,True)            
                             
