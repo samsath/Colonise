@@ -100,7 +100,7 @@ class game():
             # display you win the game image
             bg_vict = pygame.image.load(Logo["vic"])
             window.blit(bg_vict,(0,0,600,600))
-            pygame.display.flip()
+            pygame.display.flip()        
         
         for row in cl:
             col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),randint(0,int(row[3])),int(row[4]))
@@ -131,7 +131,7 @@ class game():
                 if ch == 1:
                     # you win
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                    self.level += 1
+                    print 'level is', self.level
                     self.state = "new"
                 else:
                     # you loss
@@ -144,7 +144,7 @@ class game():
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
 
-            if self.col_tick > 1000:
+            if self.col_tick > 500:
                 self.col_tick = 0         
             for a in self.ant_list:
                 a.update()                          
@@ -164,6 +164,7 @@ class game():
                     for c in self.colony_list:
                         c._mouseClickLeft(pygame.mouse.get_pos())
                 elif self.state == "new":
+                    self.level += 1
                     self.end()
                 elif self.state =="end":
                     stop()        
@@ -350,7 +351,7 @@ class ants(Sprite):
         self.game = game
         self.x, self.y = pos
         self.set_target((0, 0))
-        self.speed = 3 #speeding them up for testing
+        self.speed = 5 #speeding them up for testing
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()
@@ -429,7 +430,7 @@ window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 #insect = pygame.image.load('ant.png').convert_alpha()
 games = game(2)
-bg_start = pygame.image.load(Logo["Splash"])
+bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
