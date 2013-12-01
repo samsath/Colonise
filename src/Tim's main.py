@@ -350,15 +350,12 @@ class colony(Sprite):
         if self.state == True:
             
             if self.inhab > 0:
-                print self.game.ant_list
                 #create ant when needed  then send it to location
                 ant=ants(self.game,self.pos,self.owner)
                 ant.set_target(mouspos)
                 self.game.ant_list.add(ant)
-                print self.game.ant_list
-                print self.inhab
                 self.inhab -= 1
-                print self.inhab
+
     
 
      
@@ -376,10 +373,16 @@ class ants(Sprite):
         #self.show(self.image)
         
         
-    def show(self,c):
-        rot = pygame.transform.rotate(c, self.angle) #rotate
-        rotflip = pygame.transform.flip(rot, 1, 0) #flip horizontally
-        window.blit(rotflip,self.int_pos) #add to background image
+    def show(self,c,image):
+        if image == True:   
+            rot = pygame.transform.rotate(c, self.angle) #rotate
+            rotflip = pygame.transform.flip(rot, 1, 0) #flip horizontally#
+            window.blit(rotflip,self.int_pos) #add to background image
+        elif image == False:
+            sel = pygame.Surface((12,15))
+            sel.fill(colour["bg-c"])
+            window.blit(sel,self.int_pos)
+        
         
     @property
     def pos(self):
@@ -407,6 +410,7 @@ class ants(Sprite):
         del self
    
     def update(self):
+        self.show(self.image,False) 
         #print 'time passed', time_passed
         
             
@@ -435,9 +439,8 @@ class ants(Sprite):
                                      
             else:
                 pass
-        #self.kill() <<<<<------- THIS WAS THE CAUSE OF ALL PROBLEMS
 
-        self.show(self.image)            
+        self.show(self.image,True)            
                             
         
 
