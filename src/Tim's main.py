@@ -366,7 +366,7 @@ class ants(Sprite):
         self.game = game
         self.x, self.y = pos
         self.set_target((0, 0))
-        self.speed = 0.7
+        self.speed = 3 #speeding them up for testing
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()
