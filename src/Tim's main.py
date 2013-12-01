@@ -72,9 +72,7 @@ class game():
     def __init__(self,level):
         #interlise all the required items for the game to run
         self.level = level
-        
         self.clock = pygame.time.Clock()
-        self.ant_tick = 0
         self.col_tick = 0
         
         ###### list of all the sprite groups
@@ -136,25 +134,18 @@ class game():
             # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate    
             self.clock.tick()
             elapsed = self.clock.tick(25)
-            
-            self.ant_tick += elapsed
             self.col_tick += elapsed
-            if self.ant_tick > 25:
-                self.ant_tick = 0
+
             if self.col_tick > 1000:
-                self.col_tick = 0 
-        
+                self.col_tick = 0         
             for a in self.ant_list:
-                a.update()
-               
-            
+                a.update()                          
             for c in self.colony_list: 
                 c.update(self.col_tick)
                 
             pygame.display.update()
             
-            
-            # this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
+# this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
@@ -167,10 +158,8 @@ class game():
                 elif self.state == "new":
                     self.end()
                 elif self.state =="end":
-                    stop()
-                    
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-               
+                    stop()        
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:     
                 for c in self.colony_list:
                     c._mouseClickRight(pygame.mouse.get_pos())
                     
@@ -183,8 +172,6 @@ class game():
         for c in self.colony_list:
             self.colony_list.remove(c)
         self.mapload(self.level)
-
-
 
 class colony(Sprite):
     '''
@@ -237,9 +224,7 @@ class colony(Sprite):
         if self.owner == 1:
             # this is so only you can see your own army size
             self.screen.blit(text_suf,tex_pos)
-            
-       
-            
+                               
     def collide(self,ant):
         '''
         When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
@@ -291,7 +276,6 @@ class colony(Sprite):
                                     for c in self.game.colony_list:
                                         if c.owner != self.owner:
                                             #this will send them there
-
                                                     a=ants(self.game,self.pos,self.owner)
                                                     a.set_target(c.pos)
                                                     self.game.ant_list.add(a)
@@ -311,9 +295,7 @@ class colony(Sprite):
                                                 a.set_target(c.pos)
                                                 self.game.ant_list.add(a)
                                                 self.inhab -= 1
-             
-
-
+                        
     def draw_select(self):
         '''
         This makes the select square on the colony only if you own it 
@@ -334,7 +316,6 @@ class colony(Sprite):
         '''
         What happens to the collony when the button is clicked = Select the collony
         '''
-
         if hypot ((self.pos[0]-mouspos[0]),(self.pos[1]-mouspos[1])) <= colony.SIZE[0]*2 :
             if self.owner == 1:
                 if self.state == False:
@@ -345,20 +326,15 @@ class colony(Sprite):
     def _mouseClickLeft(self,mouspos):
         '''
         What happens to the collony when the button is clicked = Send ants inhabiting the collony there
-        '''
-        
-        if self.state == True:
-            
+        '''        
+        if self.state == True:            
             if self.inhab > 0:
                 #create ant when needed  then send it to location
                 ant=ants(self.game,self.pos,self.owner)
                 ant.set_target(mouspos)
                 self.game.ant_list.add(ant)
                 self.inhab -= 1
-
-    
-
-     
+         
 class ants(Sprite):
 
     def __init__(self,game,pos,owner):
@@ -381,8 +357,7 @@ class ants(Sprite):
             sel = pygame.Surface((12,15))
             sel.fill(colour["bg-c"])
             window.blit(sel,self.int_pos)
-        
-        
+                
     @property
     def pos(self):
         return self.x, self.y
@@ -419,11 +394,9 @@ class ants(Sprite):
                 if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
                     c.collide(self) 
                 else:
-                    self.die()
-                    
+                    self.die()                    
                     
         target_vector = sub(self.target, self.pos) 
-
         # a threshold to stop moving if the distance is to small.
         # it prevents a 'flickering' between two points
         if magnitude(target_vector) < 2: 
@@ -440,11 +413,9 @@ class ants(Sprite):
 
 
         self.show(self.image,True)            
-                            
-        
+                                    
 
 pygame.init()
-
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
