@@ -290,7 +290,7 @@ class colony(Sprite):
                                         if c.owner != self.owner:
                                             #this will send them there
 
-                                                    a=ants(self.game,self.pos,insect,self.owner)
+                                                    a=ants(self.game,self.pos,self.owner)
                                                     a.set_target(c.pos)
                                                     self.game.ant_list.add(a)
                                                     self.inhab -= 1
@@ -305,7 +305,7 @@ class colony(Sprite):
                                 for c in self.game.colony_list:
                                     if c.owner == self.owner:
                                             if time_passed < 10:
-                                                a=ants(self.game,self.pos,insect,self.owner)
+                                                a=ants(self.game,self.pos,self.owner)
                                                 a.set_target(c.pos)
                                                 self.game.ant_list.add(a)
                                                 self.inhab -= 1
@@ -350,16 +350,19 @@ class colony(Sprite):
             if self.inhab > 0:
                 print self.game.ant_list
                 #create ant when needed  then send it to location
-                ant=ants(self.game,self.pos,insect,self.owner)
+                ant=ants(self.game,self.pos,self.owner)
                 ant.set_target(mouspos)
                 self.game.ant_list.add(ant)
+                print self.game.ant_list
+                print self.inhab
                 self.inhab -= 1
+                print self.inhab
     
 
      
 class ants(Sprite):
 
-    def __init__(self,game,pos,picture,owner):
+    def __init__(self,game,pos,owner):
         Sprite.__init__(self)
         self.game = game
         self.x, self.y = pos
@@ -367,7 +370,9 @@ class ants(Sprite):
         self.speed = 0.7
         self.owner = owner
         self.angle = 0
-        self.show(picture)
+        self.image = pygame.image.load('ant.png').convert_alpha()
+        #self.show(self.image)
+        
         
     def show(self,c):
         rot = pygame.transform.rotate(c, self.angle) #rotate
@@ -418,6 +423,7 @@ class ants(Sprite):
 
             # update position
             self.x, self.y = add(self.pos, move_vector)  
+            print self.x, self.y
             
             self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
             #This goes through the location of the ant when it stops to see if there is a collony there
@@ -429,7 +435,7 @@ class ants(Sprite):
                     pass
             
 
-            self.show(insect)            
+            self.show(self.image)            
                             
         
 
@@ -438,7 +444,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-insect = pygame.image.load('ant.png').convert_alpha()
+#insect = pygame.image.load('ant.png').convert_alpha()
 games = game(2)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
