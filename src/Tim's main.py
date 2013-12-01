@@ -35,7 +35,8 @@ baseimage = {0:"Colony.png",
 
 Logo= {"win":"WinScreen.png",
        "loss":"lossScreen.png",
-       "Splash":"openScreen.png"} # list of images for the different screens
+       "Splash":"openScreen.png",
+       "vic":"vicScreen.png"} # list of images for the different screens
 
 colony_num = [] # this keeps track of who owns what
 
@@ -97,7 +98,7 @@ class game():
             cl = csv.reader(open(levels[lev],"rb"))
         except IOError:
             # display you win the game image
-            bg_vict = pygame.image.load("openScreen.png")
+            bg_vict = pygame.image.load(Logo["vic"])
             window.blit(bg_vict,(0,0,600,600))
             pygame.display.flip()
         
