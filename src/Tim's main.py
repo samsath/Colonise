@@ -290,8 +290,8 @@ class colony(Sprite):
                                         if c.owner != self.owner:
                                             #this will send them there
 
-                                                    a=ants(self.game,self.pos,(0,0),self.owner)
-                                                    a.setdest(c.pos)
+                                                    a=ants(self.game,self.pos,insect,self.owner)
+                                                    a.set_target(c.pos)
                                                     self.game.ant_list.add(a)
                                                     self.inhab -= 1
                             elif choose == 2:
@@ -305,8 +305,8 @@ class colony(Sprite):
                                 for c in self.game.colony_list:
                                     if c.owner == self.owner:
                                             if time_passed < 10:
-                                                a=ants(self.game,self.pos,(0,0),self.owner)
-                                                a.setdest(c.pos)
+                                                a=ants(self.game,self.pos,insect,self.owner)
+                                                a.set_target(c.pos)
                                                 self.game.ant_list.add(a)
                                                 self.inhab -= 1
              
@@ -346,7 +346,9 @@ class colony(Sprite):
         '''
         
         if self.state == True:
+            
             if self.inhab > 0:
+                print self.game.ant_list
                 #create ant when needed  then send it to location
                 ant=ants(self.game,self.pos,insect,self.owner)
                 ant.set_target(mouspos)
@@ -398,7 +400,7 @@ class ants(Sprite):
         del self
    
     def update(self,time_passed):
-        print 'time passed', time_passed
+        #print 'time passed', time_passed
         if time_passed < 5:
             
             if self.int_pos == self.int_target:
