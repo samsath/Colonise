@@ -366,7 +366,7 @@ class ants(Sprite):
         self.game = game
         self.x, self.y = pos
         self.set_target((0, 0))
-        self.speed = 0.7
+        self.speed = 3 #speeding them up for testing
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()
@@ -438,12 +438,6 @@ class ants(Sprite):
         
         self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
         #This goes through the location of the ant when it stops to see if there is a collony there
-        '''for c in self.game.colony_list: # and if so runs that collonies collide code
-            if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
-                c.collide(self)  
-                                     
-            else:
-                pass'''
 
         self.show(self.image,True)            
                             
