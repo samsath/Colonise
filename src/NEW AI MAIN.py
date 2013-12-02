@@ -5,6 +5,7 @@ This is to try and get the splash screen and levels to work
 from __future__ import division
 import math
 from math import hypot,atan2, degrees, pi
+import random
 from random import randint
 
 import pygame
@@ -94,9 +95,9 @@ class game():
         '''
         print "load map"
         #open csv file for each level
-        # row 1 = x , row 2= y, row 0 = owner, row 3 = count limit, row 4 numbr
+        # row 1 = x , row 2= y, row 0 = owner, row 3 = personality, row 4 numbr
         try:
-            cl = csv.reader(open(levels[lev],"rb"))
+            cl = csv.reader(open(levels[lev],"rU"))
         except IOError:
             # display you win the game image
             bg_vict = pygame.image.load(Logo["vic"])
@@ -104,7 +105,7 @@ class game():
             pygame.display.flip()        
         
         for row in cl:
-            col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),int(row[3]),int(row[4]))
+            col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),row[3],int(row[4]))
             self.colony_list.add(col)
             colony_num.append(int(row[0])) #adds the item to the list
         self.state = "play"
@@ -144,19 +145,21 @@ class game():
             self.clock.tick()
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
-
+            
             if self.col_tick > 500:
                 self.col_tick = 0         
             for a in self.ant_list:
                 a.update()                          
             for c in self.colony_list: 
                 c.update(self.col_tick)
+                c.ai(elapsed)
                 
             pygame.display.update()
             
 # this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
             event = pygame.event.poll()
-            
+            #random.shuffle(self.colony_list)
+
             if event.type == pygame.QUIT:
                 stop()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -199,10 +202,11 @@ class colony(Sprite):
         self.health = colony.healthmax # max 100
         self.inhab = 0
         self.number = number
+        self.timer = 0
+        self.attime = 0
         self.state = False
         self.type = personality# this is for the amount of ant the colony should have before attack
         self.show()
-        (self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2)
   
     
     def healthcheck(self):
@@ -240,7 +244,6 @@ class colony(Sprite):
         When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
         '''
         #print str(self.owner) + ", Collided with ant " + str(ant.owner)
-        print 'COLLIDED'
         if ant.owner != self.owner:
             if self.health <= 1:
                 self.state = False
@@ -259,54 +262,80 @@ class colony(Sprite):
      
 
         
-    def update(self ,time_passed):
+    def update(self ,tick):
         '''
         This updates the colony and controls it.
         Here is where the AI is for the game so play has someone to play against
         '''
         
         colony_num[self.number] = self.owner
-        # possible add the enime AI here
         
         self.draw_select()
         self.show()
         
         #send the data and creates new ants
         if self.owner != 0:
-            # if the colony isnt empty then it will do thing's else not
-            if time_passed < 5:
-                print time_passed
+              # if the colony isnt empty then it will do thing's else not
+            if tick < 5:
                 self.inhab += 1
                 #owner 1 is user
-                if self.owner >= 2:
-                    for a in xrange(randint(0,self.inhab)):
-                        while self.inhab >= self.attack_limit: # not enough time to build up resistance = 15
-                            choose = randint(1,3)
-                            if choose == 1:
-                                    #attack
-                                    for c in self.game.colony_list:
-                                        if c.owner != self.owner:
-                                            #this will send them there
-                                                    a=ants(self.game,self.pos,self.owner)
-                                                    a.set_target(c.pos)
-                                                    self.game.ant_list.add(a)
-                                                    self.inhab -= 1
-                            elif choose == 2:
-                                #turns an ant to a health
-                                if self.health != 10:
-                                    self.inhab -= 1
-                                    self.health += 1
-                                break
-                            elif choose == 3:
-                                #move to other same collony
-                                for c in self.game.colony_list:
-                                    if c.owner == self.owner:
-                                            if time_passed < 10:
-                                                a=ants(self.game,self.pos,self.owner)
-                                                a.set_target(c.pos)
-                                                self.game.ant_list.add(a)
-                                                self.inhab -= 1
-                        
+                
+######################   THE BRAINS    ###################                
+                
+    def ai(self, clock):
+                                                          
+        if self.owner >= 2: #if it's an enemy
+            
+            brains = {'att':[0,0,0], 'def':[1,1,0]} #[looks after itself, attacks others, attack limit]
+            self.timer += clock
+            self.attime += clock
+            me = brains[self.type]  
+            focus = 0 #this initial number also acts as start delay
+            prev = focus
+            burst = 10000
+            kill = (0,0)
+            limit = me[2]
+            
+            if self.timer > focus:
+                focus = randint(5000,20000)
+                burst = randint(100,2500)
+                self.timer = 0                                                
+            
+            if me[0] != 0:             #replenish health first (apart from att)
+                if self.health != 10:
+                    self.inhab -= 1
+                    self.health += 1
+                    
+                    
+                for c in self.game.colony_list: #help out mates on low hp
+                    if c.owner == self.owner:
+                        if c.health != 10:
+                            a=ants(self.game,self.pos,self.owner)
+                            a.set_target(c.pos)
+                            self.game.ant_list.add(a)
+                            self.inhab -= 1
+            
+            if focus != prev: 
+                print 'focus', focus 
+                prev = focus              #select target
+                if me[0] != 1:
+                    for c in self.game.colony_list:
+                        if c.owner != self.owner:
+                            kill = c.pos
+                            print 'TARGET CHOSEN', kill
+                            break
+                            
+            if self.attime > burst:
+                self.attime = 0
+                if me[0] != 1:
+                    if self.inhab > limit:
+                        a=ants(self.game,self.pos,self.owner)
+                        a.set_target(kill)
+                        self.game.ant_list.add(a)
+                        self.inhab -= 1
+            
+                                      
+                                    
     def draw_select(self):
         '''
         This makes the select square on the colony only if you own it 
@@ -392,12 +421,10 @@ class ants(Sprite):
 
     def die(self):
         self.game.ant_list.remove(self)
-        print 'KILLED MYSELF'
         del self
    
     def update(self):
         self.show(self.image,False) 
-        #print 'time passed', time_passed
         
         #This goes through the location of the ant when it stops to see if there is a collony there
         if hypot ((self.int_pos[0]-self.int_target[0]),(self.int_pos[1]-self.int_target[1])) <=5:
