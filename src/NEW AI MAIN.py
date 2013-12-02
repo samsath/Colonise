@@ -290,7 +290,7 @@ class colony(Sprite):
             self.timer += clock
             self.attime += clock
             me = brains[self.type]  
-            focus = 0 #this initial number also acts as start delay
+            focus = 50 #this initial number also acts as start delay
             prev = focus
             burst = 10000
             kill = (0,0)
@@ -303,17 +303,19 @@ class colony(Sprite):
             
             if me[0] != 0:             #replenish health first (apart from att)
                 if self.health != 10:
-                    self.inhab -= 1
-                    self.health += 1
+                    if self.inhab > limit:
+                        self.inhab -= 1
+                        self.health += 1
                     
                     
                 for c in self.game.colony_list: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
-                            a=ants(self.game,self.pos,self.owner)
-                            a.set_target(c.pos)
-                            self.game.ant_list.add(a)
-                            self.inhab -= 1
+                            if self.inhab > limit:
+                                a=ants(self.game,self.pos,self.owner)
+                                a.set_target(c.pos)
+                                self.game.ant_list.add(a)
+                                self.inhab -= 1
             
             if focus != prev: 
                 print 'focus', focus 
