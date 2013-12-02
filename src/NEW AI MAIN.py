@@ -192,6 +192,7 @@ class colony(Sprite):
     '''
     SIZE=(20,20)
     healthmax = 10
+
     
     def __init__(self,game, screen, pos, owner, personality, number):
         Sprite.__init__(self)
@@ -207,6 +208,13 @@ class colony(Sprite):
         self.state = False
         self.type = personality# this is for the amount of ant the colony should have before attack
         self.show()
+        self.brains = {'att':[0,0,0], 'def':[1,1,0]} #[looks after itself, attacks others, attack limit]
+        self.me = self.brains[self.type] 
+        self.limit = self.me[2]
+        self.focus = 50
+        self.burst = 10000
+        self.prev = self.focus
+        self.kill = (0,0)
   
     
     def healthcheck(self):
@@ -283,27 +291,21 @@ class colony(Sprite):
 ######################   THE BRAINS    ###################                
                 
     def ai(self, clock):
-                                                          
+
+        self.timer += clock
+        self.attime += clock                                                   
+        
         if self.owner >= 2: #if it's an enemy
+
+            if self.timer > self.focus:
+                self.focus = randint(5000,20000)
+                self.burst = randint(100,2500)
+                self.timer = 0  
+                print self.timer, self.focus                                              
             
-            brains = {'att':[0,0,0], 'def':[1,1,0]} #[looks after itself, attacks others, attack limit]
-            self.timer += clock
-            self.attime += clock
-            me = brains[self.type]  
-            focus = 50 #this initial number also acts as start delay
-            prev = focus
-            burst = 10000
-            kill = (0,0)
-            limit = me[2]
-            
-            if self.timer > focus:
-                focus = randint(5000,20000)
-                burst = randint(100,2500)
-                self.timer = 0                                                
-            
-            if me[0] != 0:             #replenish health first (apart from att)
+            if self.me[0] != 0:             #replenish health first (apart from att)
                 if self.health != 10:
-                    if self.inhab > limit:
+                    if self.inhab > self.limit:
                         self.inhab -= 1
                         self.health += 1
                     
@@ -311,28 +313,29 @@ class colony(Sprite):
                 for c in self.game.colony_list: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
-                            if self.inhab > limit:
+                            if self.inhab > self.limit:
                                 a=ants(self.game,self.pos,self.owner)
                                 a.set_target(c.pos)
                                 self.game.ant_list.add(a)
                                 self.inhab -= 1
             
-            if focus != prev: 
-                print 'focus', focus 
-                prev = focus              #select target
-                if me[0] != 1:
+            if self.focus != self.prev: 
+                print 'focus', self.focus, self.prev 
+                self.prev = self.focus 
+                print 'prev', self.focus, self.prev             #select target
+                if self.me[0] != 1:
                     for c in self.game.colony_list:
                         if c.owner != self.owner:
-                            kill = c.pos
-                            print 'TARGET CHOSEN', kill
+                            self.kill = c.pos
+                            print 'TARGET CHOSEN', self.kill
                             break
                             
-            if self.attime > burst:
+            if self.attime > self.burst:
                 self.attime = 0
-                if me[0] != 1:
-                    if self.inhab > limit:
+                if self.me[0] != 1:
+                    if self.inhab > self.limit:
                         a=ants(self.game,self.pos,self.owner)
-                        a.set_target(kill)
+                        a.set_target(self.kill)
                         self.game.ant_list.add(a)
                         self.inhab -= 1
             
