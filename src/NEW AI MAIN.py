@@ -237,8 +237,13 @@ class colony(Sprite):
         healthbar.fill(self.healthcheck())
         font = pygame.font.Font(None,30)
         text_suf = font.render(str(self.inhab), 1, colour["ht"])
-        tex_pos = (self.pos[0]+4,self.pos[1]-11)
-        
+        if self.inhab > 99:
+            tex_pos = (self.pos[0]-8,self.pos[1]-11)
+        elif self.inhab > 9:
+            tex_pos = (self.pos[0]-1,self.pos[1]-11)
+        else:
+            tex_pos = (self.pos[0]+4,self.pos[1]-11)
+            
         #writes to screen
         self.screen.blit(colimage,(self.pos[0]-colony.SIZE[0]/2,self.pos[1]-colony.SIZE[1]/2))
         self.screen.blit(healthbg,(self.pos[0]-6,self.pos[1]+12))
