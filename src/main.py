@@ -39,6 +39,7 @@ Logo= {"win":"WinScreen.png",
 colony_num = [] # this keeps track of who owns what
 
 #SOUNDS
+pygame.mixer.init(44100, -16, 2, 2048)
 
 win = pygame.mixer.Sound('won.wav')
 lost = pygame.mixer.Sound('lost.wav')
