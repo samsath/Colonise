@@ -92,7 +92,7 @@ class game():
         self.mapload(self.level)
         self.loop()
     
-    def stop():    
+    def stop(self):    
         '''
         When this is called it will close the program
         '''
@@ -180,7 +180,7 @@ class game():
                 elif self.state == "redo":
                     self.end()
                 elif self.state =="end":
-                    stop()        
+                    self.stop()        
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:     
                 for c in self.colony_list:
                     c._mouseClickRight(pygame.mouse.get_pos())
@@ -296,7 +296,7 @@ class colony(Sprite):
         
         #send the data and creates new ants
         if self.owner != 0:
-              # if the colony isnt empty then it will do thing's else not
+            # if the colony isnt empty then it will do thing's else not
             if tick < 5:
                 self.inhab += 1
                 #owner 1 is user
