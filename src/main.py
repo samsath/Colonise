@@ -130,8 +130,9 @@ class game():
         This checks if there is a winner or not
         As it keeps track of what colonies are ownered by what player. If all ownered by the one player then they win.
         '''
-        if len(set(lst)) == 1:
-            return lst[0]
+        new_lst = filter(lambda a:a != 0, lst)
+        if len(set(new_lst)) == 1:
+            return new_lst[0]
         else:
             return 0
             
