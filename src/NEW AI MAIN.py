@@ -308,9 +308,11 @@ class colony(Sprite):
                     if self.inhab > self.limit:
                         self.inhab -= 1
                         self.health += 1
-                    
-                    
-                for c in self.game.colony_list: #help out mates on low hp
+                
+                # I dont know if this works but you can have a look - it doesnt crash    
+                r = self.game.colony_list.sprites()
+                random.shuffle(r)    
+                for c in r: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
                             if self.inhab > self.limit:
