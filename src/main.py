@@ -90,6 +90,7 @@ class game():
         self.ant_list = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group()
         self.state = "play" # play, new, redo exit # The state is here so that we can control the player interaction as well to restart the game
+        theme.play(loops = -1)
         
     def start(self):
         #this will be called after the splash screen goes away so the game will start
@@ -152,6 +153,9 @@ class game():
             self.clock.tick()
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
+
+
+
 
             if self.col_tick > 500:
                 self.col_tick = 0         
@@ -263,16 +267,25 @@ class colony(Sprite):
         When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
         '''
         #print str(self.owner) + ", Collided with ant " + str(ant.owner)
-        if ant.owner != self.owner:
+        if ant.owner != self.owner:                
             if self.health <= 1:
+                if self.owner == 1:
+                    base_taken.play()
                 self.state = False
                 self.owner = ant.owner
                 self.health = 1
+                if self.owner == 1:
+                    base_taken.play()
             else:
-                if self.inhab > 1:
+                if self.inhab > 1:                        
                     self.inhab -= 2 # element of surprise
                 else:
+                    if self.owner == 1:
+                        base_hit.play()
                     self.health -= 1
+                    if self.health < 3:
+                        if self.owner == 1:
+                            base_alert.play()
         else:
             if self.health < 10:
                 self.health += 1
@@ -484,5 +497,6 @@ pygame.display.flip()
 
 while True:
     if pygame.event.poll().type==pygame.KEYDOWN:
+        theme.stop()
         games.start()
 
