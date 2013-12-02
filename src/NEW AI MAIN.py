@@ -82,7 +82,7 @@ class game():
         self.colony_list = pygame.sprite.Group()
         self.ant_list = pygame.sprite.Group()
         self.all_sprite_list = pygame.sprite.Group()
-        self.state = "play" # play, new, exit # The state is here so that we can control the player interaction as well to restart the game
+        self.state = "play" # play, new, redo exit # The state is here so that we can control the player interaction as well to restart the game
         
     def start(self):
         #this will be called after the splash screen goes away so the game will start
@@ -94,6 +94,7 @@ class game():
         This loads the level infomration from the csv and then displays it in the game
         '''
         print "load map"
+        global colony_num
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = personality, row 4 numbr
         try:
@@ -133,19 +134,18 @@ class game():
                 if ch == 1:
                     # you win
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                    print 'level is', self.level
                     self.state = "new"
                 else:
                     # you loss
                     window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
-                    self.state = "new"
+                    self.state = "redo"
                 #new game  
                 
             # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate    
             self.clock.tick()
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
-            
+
             if self.col_tick > 500:
                 self.col_tick = 0         
             for a in self.ant_list:
@@ -156,19 +156,19 @@ class game():
                 
             pygame.display.update()
             
-# this is to allow the user input and control the game ####### Dont know how it will work with a mac as it uses Right Clicks
+            # this is to allow the user input and control the game
             event = pygame.event.poll()
-            #random.shuffle(self.colony_list)
-
+            
             if event.type == pygame.QUIT:
                 stop()
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                print pygame.mouse.get_pos()    
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
                     for c in self.colony_list:
                         c._mouseClickLeft(pygame.mouse.get_pos())
                 elif self.state == "new":
                     self.level += 1
+                    self.end()
+                elif self.state == "redo":
                     self.end()
                 elif self.state =="end":
                     stop()        
@@ -192,7 +192,6 @@ class colony(Sprite):
     '''
     SIZE=(20,20)
     healthmax = 10
-
     
     def __init__(self,game, screen, pos, owner, personality, number):
         Sprite.__init__(self)
@@ -472,7 +471,7 @@ pygame.init()
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 #insect = pygame.image.load('ant.png').convert_alpha()
-games = game(6)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
@@ -480,6 +479,5 @@ pygame.display.flip()
 while True:
     # when clicked it will start the game running
     if pygame.event.poll().type==pygame.KEYDOWN:
-        print "clicked"
         games.start()
 
