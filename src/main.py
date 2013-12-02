@@ -499,15 +499,15 @@ window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
 while True:
-<<<<<<< HEAD
+
     if pygame.event.poll().type==pygame.KEYDOWN:
         theme.stop()
-=======
+
     event = pygame.event.poll()
     if event.type == pygame.QUIT:
         break
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
->>>>>>> 45bbd1b4c5aed0e6bde34444f2a0c6e6b96ee786
+
         games.start()
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
         games.stop()
