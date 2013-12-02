@@ -4,6 +4,7 @@ This is to try and get the splash screen and levels to work
 
 from __future__ import division
 import pygame, pygame.mixer, time, math, random, csv
+from pygame.locals import *
 from math import hypot,atan2, degrees, pi
 from random import randint, shuffle
 
@@ -50,11 +51,7 @@ base_taken = pygame.mixer.Sound('base taken.wav')
 theme = pygame.mixer.Sound('theme.wav')
 
 
-def stop():    
-    '''
-    When this is called it will close the program
-    '''
-    pygame.quit()
+
     
 '''VECTOR FUNCTIONS'''
 # some simple vector helper functions from http://stackoverflow.com/a/4114962/142637
@@ -96,6 +93,12 @@ class game():
         #this will be called after the splash screen goes away so the game will start
         self.mapload(self.level)
         self.loop()
+    
+    def stop(self):    
+        '''
+        When this is called it will close the program
+        '''
+        pygame.quit()
     
     def mapload(self,lev):
         '''
@@ -171,7 +174,7 @@ class game():
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
-                stop()
+                self.stop()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
                     for c in self.colony_list:
@@ -182,7 +185,7 @@ class game():
                 elif self.state == "redo":
                     self.end()
                 elif self.state =="end":
-                    stop()        
+                    self.stop()        
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:     
                 for c in self.colony_list:
                     c._mouseClickRight(pygame.mouse.get_pos())
@@ -307,7 +310,7 @@ class colony(Sprite):
         
         #send the data and creates new ants
         if self.owner != 0:
-              # if the colony isnt empty then it will do thing's else not
+            # if the colony isnt empty then it will do thing's else not
             if tick < 5:
                 self.inhab += 1
                 #owner 1 is user
@@ -496,7 +499,18 @@ window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
 while True:
+<<<<<<< HEAD
     if pygame.event.poll().type==pygame.KEYDOWN:
         theme.stop()
+=======
+    event = pygame.event.poll()
+    if event.type == pygame.QUIT:
+        break
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
+>>>>>>> 45bbd1b4c5aed0e6bde34444f2a0c6e6b96ee786
         games.start()
-
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
+        games.stop()
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
+        pass
+        # will be the random game mode
