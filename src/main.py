@@ -43,11 +43,7 @@ Logo= {"win":"WinScreen.png",
 colony_num = [] # this keeps track of who owns what
 
 
-def stop():    
-    '''
-    When this is called it will close the program
-    '''
-    pygame.quit()
+
     
 '''VECTOR FUNCTIONS'''
 # some simple vector helper functions from http://stackoverflow.com/a/4114962/142637
@@ -88,6 +84,12 @@ class game():
         #this will be called after the splash screen goes away so the game will start
         self.mapload(self.level)
         self.loop()
+    
+    def stop():    
+        '''
+        When this is called it will close the program
+        '''
+        pygame.quit()
     
     def mapload(self,lev):
         '''
@@ -160,7 +162,7 @@ class game():
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
-                stop()
+                self.stop()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
                     for c in self.colony_list:
