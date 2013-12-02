@@ -6,7 +6,7 @@ from __future__ import division
 import math
 from math import hypot,atan2, degrees, pi
 import random
-from random import randint
+from random import randint, shuffle
 
 import pygame
 import time
@@ -311,7 +311,7 @@ class colony(Sprite):
                 
                 # I dont know if this works but you can have a look - it doesnt crash    
                 r = self.game.colony_list.sprites()
-                random.shuffle(r)    
+                shuffle(r)    
                 for c in r: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
