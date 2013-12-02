@@ -500,14 +500,11 @@ pygame.display.flip()
 
 while True:
 
-    if pygame.event.poll().type==pygame.KEYDOWN:
-        theme.stop()
-
     event = pygame.event.poll()
     if event.type == pygame.QUIT:
         break
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
-
+        theme.stop()
         games.start()
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
         games.stop()
