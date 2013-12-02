@@ -3,15 +3,11 @@ This is to try and get the splash screen and levels to work
 '''
 
 from __future__ import division
-import math
+import pygame, pygame.mixer, time, math, random, csv
 from math import hypot,atan2, degrees, pi
-import random
 from random import randint, shuffle
 
-import pygame
-import time
 from pygame.sprite import Sprite
-import csv
 
 SIZE=(600,600) # sets the size of the window
 
@@ -41,6 +37,16 @@ Logo= {"win":"WinScreen.png",
        "vic":"vicScreen.png"} # list of images for the different screens
 
 colony_num = [] # this keeps track of who owns what
+
+#SOUNDS
+
+win = pygame.mixer.Sound('won.wav')
+lost = pygame.mixer.Sound('lost.wav')
+base_hit = pygame.mixer.Sound('base hit.wav')
+base_alert = pygame.mixer.Sound('base alert.wav')
+base_regen = pygame.mixer.Sound('base regen.wav')
+base_taken = pygame.mixer.Sound('base taken.wav')
+theme = pygame.mixer.Sound('theme.wav')
 
 
 def stop():    
@@ -470,14 +476,12 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-#insect = pygame.image.load('ant.png').convert_alpha()
 games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
 while True:
-    # when clicked it will start the game running
     if pygame.event.poll().type==pygame.KEYDOWN:
         games.start()
 
