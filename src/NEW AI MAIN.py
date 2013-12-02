@@ -326,7 +326,9 @@ class colony(Sprite):
                 self.prev = self.focus 
                 print 'prev', self.focus, self.prev             #select target
                 if self.me[0] != 1:
-                    for c in self.game.colony_list:
+                    r = self.game.colony_list.sprites()
+                    random.shuffle(r)    
+                    for c in r:
                         if c.owner != self.owner:
                             self.kill = c.pos
                             print 'TARGET CHOSEN', self.kill
