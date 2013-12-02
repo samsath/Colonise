@@ -106,6 +106,7 @@ class game():
         '''
         print "load map"
         global colony_num
+        colony_num = []
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = personality, row 4 numbr
         try:
