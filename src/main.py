@@ -177,6 +177,18 @@ class game():
             
             if event.type == pygame.QUIT:
                 self.stop()
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
+                if self.state == "new":
+                    self.level += 1
+                    self.end()
+                elif self.state == "redo":
+                    self.end()
+                elif self.state =="end":
+                    self.stop()    
+            
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
+                games.stop()
+                    
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
                     for c in self.colony_list:
