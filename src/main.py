@@ -4,6 +4,7 @@ This is to try and get the splash screen and levels to work
 
 from __future__ import division
 import pygame, pygame.mixer, time, math, random, csv
+from pygame.locals import *
 from math import hypot,atan2, degrees, pi
 from random import randint, shuffle
 
@@ -485,6 +486,13 @@ window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
 
 while True:
-    if pygame.event.poll().type==pygame.KEYDOWN:
+    event = pygame.event.poll()
+    if event.type == pygame.QUIT:
+        break
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
         games.start()
-
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
+        games.stop()
+    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
+        pass
+        # will be the random game mode
