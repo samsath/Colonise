@@ -25,8 +25,9 @@ colour = {0:pygame.color.THECOLORS["white"],
           "bg-c":(0,122,49,255),
           } # loaded colours for the different elements and bg so can all be set easily
 
-levels = {1:"level1.csv",
-          2:"level2.csv"} # list of levels as each level will be the a seperate csv file
+levels = {1:"level1.csv",2:"level2.csv",3:"level3.csv",
+          4:"level4.csv",5:"level5.csv",6:"level6.csv",
+          7:"level7.csv",8:"level8.csv"} # list of levels as each level will be the a seperate csv file
 
 baseimage = {0:"Colony.png",
              1:"Colony1.png",
@@ -429,7 +430,7 @@ pygame.init()
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
 #insect = pygame.image.load('ant.png').convert_alpha()
-games = game(1)
+games = game(4)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
