@@ -120,6 +120,7 @@ class game():
         self.state = "play"
         bg_img = pygame.image.load("grass.jpg").convert()
         window.blit(bg_img,(0,0,600,600))
+        background.play()
             
     def check(self,lst):
         '''
@@ -168,12 +169,14 @@ class game():
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
                     self.state = "new"
                     if self.state != status:
+                        background.stop()
                         won.play()
                 else:
                     # you loss
                     window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
                     self.state = "redo"
                     if self.state != status:
+                        background.stop()
                         lost.play()
                 #new game 
             
