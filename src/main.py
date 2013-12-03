@@ -441,7 +441,9 @@ class colony(Sprite):
                 self.inhab -= 1
          
 class ants(Sprite):
-
+    '''
+    This class control the ant object on the screen, with where they head to
+    '''
     def __init__(self,game,pos,owner):
         Sprite.__init__(self)
         self.game = game
@@ -454,6 +456,10 @@ class ants(Sprite):
         
         
     def show(self,c,image):
+        '''
+        Displays the ant object on the screen and then puts green where it was before.
+        Also controls the driection the ant is pointing and dirrection it is heading.
+        '''
         if image == True:   
             rot = pygame.transform.rotate(c, self.angle) #rotate
             rotflip = pygame.transform.flip(rot, 1, 0) #flip horizontally#
@@ -462,7 +468,10 @@ class ants(Sprite):
             sel = pygame.Surface((12,15))
             sel.fill(colour["bg-c"])
             window.blit(sel,self.int_pos)
-                
+    
+    '''
+    This are ant class properties which hold the computed values which are used in the update
+    '''            
     @property
     def pos(self):
         return self.x, self.y
@@ -489,9 +498,12 @@ class ants(Sprite):
         del self
    
     def update(self):
+        '''
+        This updates the ant location using the vector code.
+        '''
         self.show(self.image,False) 
         
-        #This goes through the location of the ant when it stops to see if there is a collony there
+        #This goes through the location of the ant when it stops to see if there is a collony there, depending on how far away it is.
         if hypot ((self.int_pos[0]-self.int_target[0]),(self.int_pos[1]-self.int_target[1])) <=5:
             for c in self.game.colony_list: # and if so runs that collonies collide code
                 if hypot((c.pos[0]-self.x),(c.pos[1]-self.y)) <= 20:
@@ -522,11 +534,13 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(1)
+games = game(9)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
-
+'''
+This is the first game loop which starts the game running
+'''
 while True:
 
     event = pygame.event.poll()
