@@ -85,7 +85,7 @@ class game():
         self.level = level
         self.clock = pygame.time.Clock()
         self.col_tick = 0
-        
+        self.firstyalp = 0
         ###### list of all the sprite groups
         self.colony_list = pygame.sprite.Group()
         self.ant_list = pygame.sprite.Group()
@@ -121,7 +121,11 @@ class game():
         self.state = "play"
         bg_img = pygame.image.load("grass.jpg").convert()
         window.blit(bg_img,(0,0,600,600))
-        background.play()
+        won.stop()
+        lost.stop()
+        theme.stop()
+        background.play(loops = -1)
+        yalp = self.firstyalp
             
     def check(self,lst):
         '''
