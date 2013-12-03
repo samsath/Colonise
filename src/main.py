@@ -109,7 +109,6 @@ class game():
         '''
         This loads the level infomration from the csv and then displays it in the game
         '''
-        print "load map"
         global colony_num
         colony_num = []
         #open csv file for each level
@@ -179,9 +178,7 @@ class game():
                         background.stop()
                         won.play()
                         yalp = 1
-                    print pygame.mixer.get_busy()
                     if pygame.mixer.get_busy() == 0:
-                        print 'mixer not busy', yalp
                         if yalp == 1:
                             theme.play(loops = -1)
                             yalp = 0
@@ -197,23 +194,6 @@ class game():
                         if yalp == 1:
                             theme.play(loops = -1)
                             yalp = 0
-                #new game 
-
-                    if self.state != "end":
-                        # you win
-                        window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                        self.state = "new"
-                        if self.state != status:
-                            background.stop()
-                            won.play()
-                    else:
-                        # you loss
-                        window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
-                        self.state = "redo"
-                        if self.state != status:
-                            background.stop()
-                            lost.play()
-                    #new game 
 
             
             pygame.display.update()
@@ -350,7 +330,6 @@ class colony(Sprite):
         '''
         When an ant goes into the collony it will couse the health and inhab to change depending the ant owner
         '''
-        #print str(self.owner) + ", Collided with ant " + str(ant.owner)
         if ant.owner != self.owner:                
             if self.health <= 1:
                 if self.owner == 1:
@@ -411,8 +390,7 @@ class colony(Sprite):
             if self.timer > self.focus:
                 self.focus = randint(5000,20000)
                 self.burst = randint(500,2500)
-                self.timer = 0  
-                print self.timer, self.focus                                              
+                self.timer = 0                                              
             
             if self.me[0] != 0:             #replenish health first (apart from att)
                 if self.health != 10:
@@ -430,7 +408,6 @@ class colony(Sprite):
                         for c in r:
                             if c.owner != self.owner:
                                 self.kill = c.pos
-                                print 'TARGET CHOSEN', self.kill
                                 break           
                     if self.attime > self.burst-150:
                         if self.inhab > self.limit:    
@@ -448,16 +425,13 @@ class colony(Sprite):
                     for c in r:
                         if c.owner != self.owner:
                             self.kill = c.pos
-                            print 'TARGET CHOSEN', self.kill
                             break
                             
 
                         
             if self.me[0] == 2:
                 if self.inhab > self.limit:
-                    print self.attime, self.burst
                     if self.attime > self.burst:
-                        print 'attacking'
                         for c in r:
                             if c.owner != self.owner:
                                 a=ants(self.game,self.pos,self.owner)
@@ -601,7 +575,6 @@ class ants(Sprite):
 
         # update position
         self.x, self.y = add(self.pos, move_vector)  
-        #print self.x, self.y
         
         self.angle = degrees(atan2(self.t_y - self.y, self.t_x - self.x)) + 90 #calculate angle to target 
 
@@ -613,7 +586,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(4)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
