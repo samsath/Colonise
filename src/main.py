@@ -553,11 +553,8 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-<<<<<<< HEAD
 games = game(4)
-=======
 games = game(10)
->>>>>>> 54a419343863b8c998820cc930ea2af60620acde
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
