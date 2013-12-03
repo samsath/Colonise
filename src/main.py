@@ -280,7 +280,7 @@ class colony(Sprite):
         self.attime = 0
         self.state = False
         self.show()
-        self.brains = {'att':[0,0], 'def':[1,0], 'aoe':[2,15]} #[0 = att 1 = def 2 = aoe, attack limit]
+        self.brains = {'att':[0,0], 'def':[1,0], 'spray':[2,15]} #[0 = att 1 = def 2 = spray, attack limit]
         self.me = self.brains[personality] 
         self.limit = self.me[1]
         self.focus = 50
