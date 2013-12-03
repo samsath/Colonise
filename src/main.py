@@ -93,6 +93,7 @@ class game():
         self.state = "play" # play, new, redo exit # The state is here so that we can control the player interaction as well to restart the game
         theme.play(loops = -1)
         
+        
     def start(self):
         #this will be called after the splash screen goes away so the game will start
         self.mapload(self.level)
@@ -162,9 +163,9 @@ class game():
                 
                 
             # font level indicator
-            font = pygame.font.Font(None,30)
-            text_level = font.render("Level: " + str(self.level), 1, colour["ht"])
-            window.blit(text_level,(10,10))   
+            font = pygame.font.Font(None,25)
+            text_level = font.render("Level: " + str(self.level) + ",     Esc to Quit,  R to Restart game, D to Deselect all colony", 1, colour["ht"])
+            window.blit(text_level,(25,5))   
             
             # Checks if there is a winner
             ch = self.check(colony_num)
@@ -509,11 +510,13 @@ class colony(Sprite):
         '''        
         if self.state == True:            
             if self.inhab > 0:
-                #create ant when needed  then send it to location
-                ant=ants(self.game,self.pos,self.owner)
-                ant.set_target(mouspos)
-                self.game.ant_list.add(ant)
-                self.inhab -= 1
+                for c in self.game.colony_list:
+                    if hypot ((c.pos[0]-mouspos[0]),(c.pos[1]-mouspos[1])) <= colony.SIZE[0]*2:
+                        #create ant when needed  then send it to location
+                        ant=ants(self.game,self.pos,self.owner)
+                        ant.set_target(mouspos)
+                        self.game.ant_list.add(ant)
+                        self.inhab -= 1
          
 class ants(Sprite):
     '''
