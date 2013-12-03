@@ -3,10 +3,10 @@ This is to try and get the splash screen and levels to work
 '''
 
 from __future__ import division
-import pygame, pygame.mixer, time, math, random, csv
+import pygame, pygame.mixer, math, random, csv
 from pygame.locals import *
-from math import hypot,atan2, degrees, pi
-from random import randint, shuffle
+from math import hypot,atan2, degrees
+from random import randint
 
 from pygame.sprite import Sprite
 
@@ -204,6 +204,10 @@ class game():
             
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
                 self.end()
+                
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_d):
+                for c in self.colony_list:
+                    c.deselect(False)
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
@@ -271,7 +275,9 @@ class colony(Sprite):
         self.prev = self.focus
         self.kill = (0,0)
   
-    
+    def deselect(self,value):
+        self.state = value
+        
     def healthcheck(self):
         # Checks the health level of the colony and changes the colour of the health bar accordingly
         if self.health >= colony.healthmax/2:
@@ -463,7 +469,7 @@ class colony(Sprite):
                     self.state = True
                 else:
                     self.state = False
-        
+
         
     
     def _mouseClickLeft(self,mouspos):
