@@ -133,7 +133,7 @@ class game():
             else:
                 return 0
         return 2
-            
+
     def loop(self):
         '''
         This is the main game loop for the pygame
@@ -221,7 +221,7 @@ class game():
                     c._mouseClickRight(click)
                 
                     
-            status = self.state
+
                     
     def end(self):
         '''
