@@ -222,7 +222,7 @@ class game():
                 
             # font level indicator
             font = pygame.font.Font(None,30)
-            text_level = font.render("Your Level is: " + str(self.level), 1, colour["ht"])
+            text_level = font.render("Level: " + str(self.level), 1, colour["ht"])
             window.blit(text_level,(10,10))   
                 
             pygame.display.update()
@@ -242,7 +242,13 @@ class game():
                     self.stop()    
             
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
-                games.stop()
+                self.stop()
+            
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
+                self.end()
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_m):
+                #mute sound here
+                pass
                     
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
@@ -395,7 +401,7 @@ class colony(Sprite):
 
             if self.timer > self.focus:
                 self.focus = randint(5000,20000)
-                self.burst = randint(100,2500)
+                self.burst = randint(500,2500)
                 self.timer = 0  
                 print self.timer, self.focus                                              
             
@@ -404,18 +410,18 @@ class colony(Sprite):
                     if self.inhab > self.limit:
                         self.inhab -= 1
                         self.health += 1
-                
-                # I dont know if this works but you can have a look - it doesnt crash    
+                    
                 r = self.game.colony_list.sprites()
                 shuffle(r)    
                 for c in r: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
-                            if self.inhab > self.limit:
-                                a=ants(self.game,self.pos,self.owner)
-                                a.set_target(c.pos)
-                                self.game.ant_list.add(a)
-                                self.inhab -= 1
+                            if self.attime > self.burst-150:
+                                if self.inhab > self.limit:
+                                    a=ants(self.game,self.pos,self.owner)
+                                    a.set_target(c.pos)
+                                    self.game.ant_list.add(a)
+                                    self.inhab -= 1
             
             if self.focus != self.prev: 
                 print 'focus', self.focus, self.prev 
@@ -447,7 +453,8 @@ class colony(Sprite):
         '''
         sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
         if self.owner == 1:
-            if self.state == True:
+            if self.state == True:# this is to allow the user input and control the game
+            
                 ucolour = list(colour[self.owner])
                 ucolour[3]=255
                 sel.fill(ucolour)
@@ -487,7 +494,7 @@ class ants(Sprite):
         self.game = game
         self.x, self.y = pos
         self.set_target((0, 0))
-        self.speed = 5 #speeding them up for testing
+        self.speed = 3 #speeding them up for testing
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()

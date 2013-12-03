@@ -1,6 +1,6 @@
 from random import randint, choice
-import csv
-SIZE = 11
+
+SIZE = randint(0,20)
 answers = []
 def find(col,colony):
     left = right = col
@@ -19,7 +19,7 @@ def solve(n):
     smaller_solutions = solve(n-1)
     
     return [solution+[[n,i+1]]
-        for i in xrange(11)
+        for i in xrange(SIZE)
                     for solution in smaller_solutions
                         if not find(i+1, solution)]
 def run():
@@ -27,7 +27,7 @@ def run():
     personal = {1:"att",2:"def"}
     count = 0
     tobe = []
-    for answer in solve(11):
+    for answer in solve(SIZE):
         answers.append(answer)
     
     choose = choice(answers)
@@ -38,13 +38,13 @@ def run():
         tobe.append(string)
         count += 1
     count = 0
-    for i in range(randint(0,12)):
+    for i in range(randint(0,SIZE)):
         row = choice(tobe)
         print row
         print "owner = " + str(row[0])
-        print "x = " + str(row[2:5])
-        print "y = " + str(row[6:9])
-        print "per = " + str(row[10:13])
-        print "count = "+ str(row[14])
+        print "x = " + str(row[1])
+        print "y = " + str(row[2])
+        print "per = " + str(row[3])
+        print "count = "+ str(row[4])
         
 run()

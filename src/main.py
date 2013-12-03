@@ -159,9 +159,6 @@ class game():
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
 
-
-
-
             if self.col_tick > 500:
                 self.col_tick = 0         
             for a in self.ant_list:
@@ -178,7 +175,13 @@ class game():
                 
             pygame.display.update()
             
-            # this is to allow the user input and control the game
+            '''
+            This goes through the different user inputs and assigns an event to a function.
+            Esc = close
+            r = reset that level
+            space = when on winning or lossing screen goes to next
+            mouse clicks = for ant movement
+            '''
             event = pygame.event.poll()
             
             if event.type == pygame.QUIT:
@@ -197,7 +200,7 @@ class game():
             
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
                 self.end()
-                    
+            
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
                     for c in self.colony_list:
@@ -222,6 +225,7 @@ class game():
         for c in self.colony_list:
             self.colony_list.remove(c)
         self.mapload(self.level)
+        
 
 class colony(Sprite):
     '''
@@ -518,7 +522,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(10)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
