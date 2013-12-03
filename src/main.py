@@ -254,7 +254,7 @@ class game():
             self.ant_list.remove(a)
         for c in self.colony_list:
             self.colony_list.remove(c)
-        if self.level < 11:
+        if self.level < 10:
             self.mapload(self.level)
         else:
             self.wingame()
