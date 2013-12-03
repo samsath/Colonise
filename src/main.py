@@ -354,6 +354,9 @@ class colony(Sprite):
         self.attime += clock                                                   
         
         if self.owner >= 2: #if it's an enemy
+        
+            r = self.game.colony_list.sprites()
+            random.shuffle(r)
 
             if self.timer > self.focus:
                 self.focus = randint(5000,20000)
@@ -382,27 +385,20 @@ class colony(Sprite):
             
             if self.focus != self.prev: #This is for att personality
                 self.prev = self.focus              #select target
-                if self.me[0] != 1:
-                    r = self.game.colony_list.sprites()
-                    random.shuffle(r)    
+                if self.me[0] == 0:   
                     for c in r:
                         if c.owner != self.owner:
                             self.kill = c.pos
                             print 'TARGET CHOSEN', self.kill
                             break
                             
-            if self.attime > self.burst:  #attacking rate
-                self.attime = 0
-                if self.me[0] != 1:
-                    if self.inhab > self.limit:
-                        a=ants(self.game,self.pos,self.owner)
-                        a.set_target(self.kill)
-                        self.game.ant_list.add(a)
-                        self.inhab -= 1
+
                         
             if self.me[0] == 2:
                 if self.inhab > self.limit:
+                    print self.attime, self.burst
                     if self.attime > self.burst:
+                        print 'attacking'
                         for c in r:
                             if c.owner != self.owner:
                                 a=ants(self.game,self.pos,self.owner)
@@ -410,7 +406,14 @@ class colony(Sprite):
                                 self.game.ant_list.add(a)
                                 self.inhab -= 1
                                 
-            
+            if self.attime > self.burst:  #attacking rate
+                self.attime = 0
+                if self.me[0] == 0:
+                    if self.inhab > self.limit: 
+                        a=ants(self.game,self.pos,self.owner)
+                        a.set_target(self.kill)
+                        self.game.ant_list.add(a)
+                        self.inhab -= 1
                                       
                                     
     def draw_select(self):
@@ -548,7 +551,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(1)
+games = game(4)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
