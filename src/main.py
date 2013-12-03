@@ -252,9 +252,9 @@ class colony(Sprite):
         self.state = False
         self.type = personality# this is for the amount of ant the colony should have before attack
         self.show()
-        self.brains = {'att':[0,0,0], 'def':[1,1,0]} #[looks after itself, attacks others, attack limit]
+        self.brains = {'att':[0,0], 'def':[1,0], 'aoe':[2,15]} #[0 = att 1 = def 2 = aoe, attack limit]
         self.me = self.brains[self.type] 
-        self.limit = self.me[2]
+        self.limit = self.me[1]
         self.focus = 50
         self.burst = 10000
         self.prev = self.focus
@@ -366,23 +366,22 @@ class colony(Sprite):
                     if self.inhab > self.limit:
                         self.inhab -= 1
                         self.health += 1
-                    
-                r = self.game.colony_list.sprites()
-                shuffle(r)    
-                for c in r: #help out mates on low hp
-                    if c.owner == self.owner:
-                        if c.health != 10:
-                            if self.attime > self.burst-150:
-                                if self.inhab > self.limit:
-                                    a=ants(self.game,self.pos,self.owner)
-                                    a.set_target(c.pos)
-                                    self.game.ant_list.add(a)
-                                    self.inhab -= 1
+                
+                if self.me[0] = 1:      #just def 
+                    r = self.game.colony_list.sprites()
+                    shuffle(r)
+                    if self.attime > self.burst-150:
+                        if self.inhab > self.limit:    
+                            for c in r: #help out mates on low hp
+                                if c.owner == self.owner:
+                                    if c.health != 10:
+                                        a=ants(self.game,self.pos,self.owner)
+                                        a.set_target(c.pos)
+                                        self.game.ant_list.add(a)
+                                        self.inhab -= 1
             
-            if self.focus != self.prev: 
-                print 'focus', self.focus, self.prev 
-                self.prev = self.focus 
-                print 'prev', self.focus, self.prev             #select target
+            if self.focus != self.prev: #This is for att personality
+                self.prev = self.focus              #select target
                 if self.me[0] != 1:
                     r = self.game.colony_list.sprites()
                     random.shuffle(r)    
@@ -392,7 +391,7 @@ class colony(Sprite):
                             print 'TARGET CHOSEN', self.kill
                             break
                             
-            if self.attime > self.burst:
+            if self.attime > self.burst:  #attacking rate
                 self.attime = 0
                 if self.me[0] != 1:
                     if self.inhab > self.limit:
@@ -400,6 +399,17 @@ class colony(Sprite):
                         a.set_target(self.kill)
                         self.game.ant_list.add(a)
                         self.inhab -= 1
+                        
+            if self.me[0] == 2:
+                if self.inhab > self.limit:
+                    if self.attime > self.burst:
+                        for c in r:
+                            if c.owner != self.owner:
+                                a=ants(self.game,self.pos,self.owner)
+                                a.set_target(c.pos)
+                                self.game.ant_list.add(a)
+                                self.inhab -= 1
+                                
             
                                       
                                     
