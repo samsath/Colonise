@@ -242,6 +242,7 @@ class game():
             status = self.state      
            
         bg_vict = pygame.image.load(Logo["vic"])
+        theme.play(loop = -1)
         window.blit(bg_vict,(0,0,600,600))
         pygame.display.flip()   
 
