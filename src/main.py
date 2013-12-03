@@ -163,7 +163,7 @@ class game():
                 
                 
             # font level indicator
-            font = pygame.font.Font(None,27)
+            font = pygame.font.Font('atarifull.ttf',12)
             text_level = font.render("Level: " + str(self.level) + ",   Esc to Quit,  R to Restart, D to Deselect", 1, colour[0])
             window.blit(text_level,(25,5))   
             
@@ -591,7 +591,11 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
+<<<<<<< HEAD
 games = game(9)
+=======
+games = game(1)
+>>>>>>> bfc5f03f27d103dffb62782321e4058ecc6f85fd
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
