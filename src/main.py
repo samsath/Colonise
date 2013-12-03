@@ -252,10 +252,9 @@ class colony(Sprite):
         self.timer = 0
         self.attime = 0
         self.state = False
-        self.type = personality# this is for the amount of ant the colony should have before attack
         self.show()
         self.brains = {'att':[0,0], 'def':[1,0], 'aoe':[2,15]} #[0 = att 1 = def 2 = aoe, attack limit]
-        self.me = self.brains[self.type] 
+        self.me = self.brains[personality] 
         self.limit = self.me[1]
         self.focus = 50
         self.burst = 10000
@@ -372,7 +371,18 @@ class colony(Sprite):
                         self.inhab -= 1
                         self.health += 1
                 
-                if self.me[0] == 1:      #just def 
+                if self.me[0] == 1:  
+                    left = 0
+                    for c in r:
+                        if c.owner == self.owner:
+                            left += 1  
+                    if left == 1:
+                        self.me = self.brains['att'] 
+                        for c in r:
+                            if c.owner != self.owner:
+                                self.kill = c.pos
+                                print 'TARGET CHOSEN', self.kill
+                                break           
                     if self.attime > self.burst-150:
                         if self.inhab > self.limit:    
                             for c in r: #help out mates on low hp
@@ -551,7 +561,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(4)
+games = game(2)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
