@@ -28,10 +28,11 @@ levels = {1:"level1.csv",2:"level2.csv",3:"level3.csv",
           7:"level7.csv",8:"level8.csv",9:"level9.csv",
           10:"level10.csv"} # list of levels as each level will be the a seperate csv file
 
-baseimage = {0:"Colony.png",
-             1:"Colony1.png",
-             2:"Colony2.png",
-             3:"Colony3.png"} # list of the images for the different colony objects
+baseimage = {0:"Colonyn.png",
+             1:"Colonyp.png",
+             2:"Colonyb.png",
+             3:"Colonyg.png"
+             4:"Colonyy.png"} # list of the images for the different colony objects
 
 Logo= {"win":"WinScreen.png",
        "loss":"lossScreen.png",
