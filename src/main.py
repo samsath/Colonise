@@ -78,6 +78,7 @@ class game():
     This replaces the While loop at the end of the file, so that Have more control over the game process
     with this being the main process now.
     '''
+    
     def __init__(self,level):
         #interlise all the required items for the game to run
         self.level = level
@@ -140,7 +141,7 @@ class game():
         '''
         while True:
                             
-            # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate    
+            # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate                
             self.clock.tick()
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
