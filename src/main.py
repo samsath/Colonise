@@ -399,7 +399,7 @@ class colony(Sprite):
             
             if self.me[0] != 0:             #replenish health first (apart from att)
                 if self.health != 10:
-                    if self.inhab > self.limit:
+                    if self.inhab > 0:
                         self.inhab -= 1
                         self.health += 1
                 
@@ -591,7 +591,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(10)
+games = game(4)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
