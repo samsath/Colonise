@@ -164,7 +164,7 @@ class game():
                 
             # font level indicator
             font = pygame.font.Font(None,27)
-            text_level = font.render("Level: " + str(self.level) + ",   Esc to Quit,  R to Restart game, D to Deselect all colony", 1, colour[0])
+            text_level = font.render("Level: " + str(self.level) + ",   Esc to Quit,  R to Restart, D to Deselect", 1, colour[0])
             window.blit(text_level,(25,5))   
             
             # Checks if there is a winner
