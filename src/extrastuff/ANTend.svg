@@ -506,16 +506,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="486.90539"
-     inkscape:cy="359.11134"
+     inkscape:zoom="1.4"
+     inkscape:cx="485.84372"
+     inkscape:cy="345.99048"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1400"
      inkscape:window-height="1027"
      inkscape:window-x="0"
-     inkscape:window-y="246"
+     inkscape:window-y="24"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -527,7 +527,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -535,6 +535,26 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#007a31;fill-opacity:1;stroke:none"
+       id="rect3135-2"
+       width="552.16321"
+       height="216.44888"
+       x="187.13272"
+       y="760.20911"
+       inkscape:export-filename="/home/sam/Nottingham/G54PRG_Programming/CWK/Colonise/src/lossScreen.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#007a31;fill-opacity:1;stroke:none"
+       id="rect3135"
+       width="552.87744"
+       height="220.02031"
+       x="207.13271"
+       y="495.92346"
+       inkscape:export-filename="/home/sam/Nottingham/G54PRG_Programming/CWK/Colonise/src/WinScreen.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <rect
        style="fill:#7b4d2f;fill-opacity:1;stroke:#634e40;stroke-width:12.60000038000000089;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect4248"
@@ -883,8 +903,8 @@
          y="631.63361">YOU WIN</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#280b0b;fill-opacity:1;stroke:#634e40;font-family:Atari Font Full Version;-inkscape-font-specification:Atari Font Full Version;stroke-opacity:1;stroke-width:0.599;stroke-miterlimit:4;stroke-dasharray:none"
-       x="422.04837"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#280b0b;fill-opacity:1;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Atari Font Full Version;-inkscape-font-specification:Atari Font Full Version"
+       x="572.3479"
        y="648.12347"
        id="text4223-3"
        sodipodi:linespacing="125%"
@@ -893,9 +913,14 @@
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan4225-5"
-         x="422.04837"
+         x="575.3479"
          y="648.12347"
-         style="stroke:#634e40;stroke-opacity:1;fill:#280b0b;stroke-width:0.599;stroke-miterlimit:4;stroke-dasharray:none">Click to start the next Level</tspan></text>
+         style="text-align:center;text-anchor:middle;fill:#280b0b;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">Click Space bar to start </tspan><tspan
+         sodipodi:role="line"
+         x="572.3479"
+         y="663.12347"
+         style="text-align:center;text-anchor:middle;fill:#280b0b;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="tspan3905">the next Level</tspan></text>
     <path
        style="fill:#ff0000;fill-opacity:1;stroke:#aa0000;stroke-width:0.59899998;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
        d="m 397.40546,631.04133 c -0.31987,2.42546 -3.44663,4.40844 -5.89286,4.375 -2.11939,-0.029 -4.69133,-1.62814 -5,-3.92857 -0.0183,-0.13604 -0.035,-0.2732 -0.0503,-0.41138 -0.3391,-3.07517 -0.108,-4.0677 1.13973,-7.04799 0.94323,-2.25297 2.75786,-8.38848 4.71409,-8.34421 1.94577,0.044 2.96251,5.35433 3.87271,8.25393 0.71945,2.29195 1.54234,4.6331 1.21658,7.10322 z"
@@ -968,8 +993,8 @@
          style="stroke-width:2.44482589">YOU LOOSE</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#280b0b;fill-opacity:1;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Atari Font Full Version;-inkscape-font-specification:Atari Font Full Version"
-       x="428.47696"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#280b0b;fill-opacity:1;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Atari Font Full Version;-inkscape-font-specification:Atari Font Full Version"
+       x="560.77649"
        y="897.40918"
        id="text4223-3-9"
        sodipodi:linespacing="125%"
@@ -977,10 +1002,15 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
-         x="428.47696"
+         x="563.77649"
          y="897.40918"
-         style="fill:#280b0b;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="tspan4461">Click to redo the Level</tspan></text>
+         style="text-align:center;text-anchor:middle;fill:#280b0b;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="tspan4461">Click Space bar to redo </tspan><tspan
+         sodipodi:role="line"
+         x="560.77649"
+         y="912.40918"
+         style="text-align:center;text-anchor:middle;fill:#280b0b;stroke:#634e40;stroke-width:0.59899998;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="tspan3907">the Level</tspan></text>
     <g
        id="g4531"
        transform="translate(224.28572,-4.2857143)"
