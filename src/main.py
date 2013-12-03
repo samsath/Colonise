@@ -215,16 +215,9 @@ class game():
                     c.deselect(False)
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
-                if self.state == "play":
-                    for c in self.colony_list:
-                        c._mouseClickLeft(pygame.mouse.get_pos())
-                elif self.state == "new":
-                    self.level += 1
-                    self.end()
-                elif self.state == "redo":
-                    self.end()
-                elif self.state =="end":
-                    self.stop()        
+                for c in self.colony_list:
+                    c._mouseClickLeft(pygame.mouse.get_pos())
+                        
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    
                 click =  pygame.mouse.get_pos()
                 for c in self.colony_list:
