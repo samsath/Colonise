@@ -131,29 +131,20 @@ class game():
         As it keeps track of what colonies are ownered by what player. If all ownered by the one player then they win.
         '''
         new_lst = filter(lambda a:a != 0, lst)
-        if len(set(new_lst)) == 1:
-            return new_lst[0]
-        else:
-            return 0
+        you = filter(lambda a:a == 1, lst)
+        if len(you) >=1:
+            if len(set(new_lst)) == 1:
+                return new_lst[0]
+            else:
+                return 0
+        return 2
             
     def loop(self):
         '''
         This is the main game loop for the pygame
         '''
         while True:
-            # Checks if there is a winner
-            ch = self.check(colony_num)
-            if  ch > 0:
-                if ch == 1:
-                    # you win
-                    window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                    self.state = "new"
-                else:
-                    # you loss
-                    window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
-                    self.state = "redo"
-                #new game  
-                
+                            
             # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate    
             self.clock.tick()
             elapsed = self.clock.tick(25)
@@ -172,7 +163,20 @@ class game():
             font = pygame.font.Font(None,30)
             text_level = font.render("Level: " + str(self.level), 1, colour["ht"])
             window.blit(text_level,(10,10))   
-                
+            
+            # Checks if there is a winner
+            ch = self.check(colony_num)
+            if  ch > 0:
+                if ch == 1:
+                    # you win
+                    window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+                    self.state = "new"
+                else:
+                    # you loss
+                    window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+                    self.state = "redo"
+                #new game 
+            
             pygame.display.update()
             
             '''
@@ -534,7 +538,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(9)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
