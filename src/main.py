@@ -31,7 +31,7 @@ levels = {1:"level1.csv",2:"level2.csv",3:"level3.csv",
 baseimage = {0:"Colonyn.png",
              1:"Colonyp.png",
              2:"Colonyb.png",
-             3:"Colonyg.png"
+             3:"Colonyg.png",
              4:"Colonyy.png"} # list of the images for the different colony objects
 
 Logo= {"win":"WinScreen.png",
@@ -166,7 +166,7 @@ class game():
             ch = self.check(colony_num)
             if  ch > 0:
                 if ch == 1:
-<<<<<<< HEAD
+
                     # you win
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
                     self.state = "new"
@@ -193,7 +193,7 @@ class game():
                             theme.play(loops = -1)
                             yalp = 0
                 #new game 
-=======
+
                     if self.state != "end":
                         # you win
                         window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
@@ -209,7 +209,7 @@ class game():
                             background.stop()
                             lost.play()
                     #new game 
->>>>>>> 29f0207cde283bfbdaf01d225c60a63bb32da153
+
             
             pygame.display.update()
             
