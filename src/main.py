@@ -85,7 +85,7 @@ class game():
         self.level = level
         self.clock = pygame.time.Clock()
         self.col_tick = 0
-        self. firstyalp = 0
+        
         ###### list of all the sprite groups
         self.colony_list = pygame.sprite.Group()
         self.ant_list = pygame.sprite.Group()
@@ -121,11 +121,7 @@ class game():
         self.state = "play"
         bg_img = pygame.image.load("grass.jpg").convert()
         window.blit(bg_img,(0,0,600,600))
-        won.stop()
-        lost.stop()
-        theme.stop()
-        background.play(loops = -1)
-        yalp = self.firstyalp
+        background.play()
             
     def check(self,lst):
         '''
@@ -147,7 +143,7 @@ class game():
         '''
         while True:
                             
-            # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate               
+            # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate                
             self.clock.tick()
             elapsed = self.clock.tick(25)
             self.col_tick += elapsed
@@ -170,6 +166,7 @@ class game():
             ch = self.check(colony_num)
             if  ch > 0:
                 if ch == 1:
+<<<<<<< HEAD
                     # you win
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
                     self.state = "new"
@@ -196,6 +193,23 @@ class game():
                             theme.play(loops = -1)
                             yalp = 0
                 #new game 
+=======
+                    if self.state != "end":
+                        # you win
+                        window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+                        self.state = "new"
+                        if self.state != status:
+                            background.stop()
+                            won.play()
+                    else:
+                        # you loss
+                        window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+                        self.state = "redo"
+                        if self.state != status:
+                            background.stop()
+                            lost.play()
+                    #new game 
+>>>>>>> 29f0207cde283bfbdaf01d225c60a63bb32da153
             
             pygame.display.update()
             
@@ -230,16 +244,9 @@ class game():
                     c.deselect(False)
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
-                if self.state == "play":
-                    for c in self.colony_list:
-                        c._mouseClickLeft(pygame.mouse.get_pos())
-                elif self.state == "new":
-                    self.level += 1
-                    self.end()
-                elif self.state == "redo":
-                    self.end()
-                elif self.state =="end":
-                    self.stop()        
+                for c in self.colony_list:
+                    c._mouseClickLeft(pygame.mouse.get_pos())
+                        
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    
                 click =  pygame.mouse.get_pos()
                 for c in self.colony_list:
@@ -611,6 +618,7 @@ while True:
     if event.type == pygame.QUIT:
         break
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_SPACE):
+        theme.stop()
         games.start()
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
         games.stop()
