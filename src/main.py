@@ -346,7 +346,7 @@ class colony(Sprite):
 
             if self.timer > self.focus:
                 self.focus = randint(5000,20000)
-                self.burst = randint(100,2500)
+                self.burst = randint(500,2500)
                 self.timer = 0  
                 print self.timer, self.focus                                              
             
@@ -355,18 +355,18 @@ class colony(Sprite):
                     if self.inhab > self.limit:
                         self.inhab -= 1
                         self.health += 1
-                
-                # I dont know if this works but you can have a look - it doesnt crash    
+                    
                 r = self.game.colony_list.sprites()
                 shuffle(r)    
                 for c in r: #help out mates on low hp
                     if c.owner == self.owner:
                         if c.health != 10:
-                            if self.inhab > self.limit:
-                                a=ants(self.game,self.pos,self.owner)
-                                a.set_target(c.pos)
-                                self.game.ant_list.add(a)
-                                self.inhab -= 1
+                            if self.attime > self.burst-150:
+                                if self.inhab > self.limit:
+                                    a=ants(self.game,self.pos,self.owner)
+                                    a.set_target(c.pos)
+                                    self.game.ant_list.add(a)
+                                    self.inhab -= 1
             
             if self.focus != self.prev: 
                 print 'focus', self.focus, self.prev 
@@ -438,7 +438,7 @@ class ants(Sprite):
         self.game = game
         self.x, self.y = pos
         self.set_target((0, 0))
-        self.speed = 5 #speeding them up for testing
+        self.speed = 3 #speeding them up for testing
         self.owner = owner
         self.angle = 0
         self.image = pygame.image.load('ant.png').convert_alpha()
@@ -513,7 +513,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(1)
+games = game(3)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
