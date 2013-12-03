@@ -193,7 +193,10 @@ class game():
                     self.stop()    
             
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
-                games.stop()
+                self.stop()
+            
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
+                self.end()
                     
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: 
                 if self.state == "play":
@@ -398,7 +401,8 @@ class colony(Sprite):
         '''
         sel = pygame.Surface((colony.SIZE[0]*2,colony.SIZE[1]*2))
         if self.owner == 1:
-            if self.state == True:
+            if self.state == True:# this is to allow the user input and control the game
+            
                 ucolour = list(colour[self.owner])
                 ucolour[3]=255
                 sel.fill(ucolour)
