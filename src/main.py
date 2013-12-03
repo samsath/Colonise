@@ -25,7 +25,8 @@ colour = {0:pygame.color.THECOLORS["white"],
 
 levels = {1:"level1.csv",2:"level2.csv",3:"level3.csv",
           4:"level4.csv",5:"level5.csv",6:"level6.csv",
-          7:"level7.csv",8:"level8.csv",9:"level9.csv"} # list of levels as each level will be the a seperate csv file
+          7:"level7.csv",8:"level8.csv",9:"level9.csv",
+          10:"level10.csv"} # list of levels as each level will be the a seperate csv file
 
 baseimage = {0:"Colony.png",
              1:"Colony1.png",
@@ -109,14 +110,7 @@ class game():
         colony_num = []
         #open csv file for each level
         # row 1 = x , row 2= y, row 0 = owner, row 3 = personality, row 4 numbr
-        try:
-            cl = csv.reader(open(levels[lev],"rU"))
-        except IOError:
-            # display you win the game image
-            bg_vict = pygame.image.load(Logo["vic"])
-            window.blit(bg_vict,(0,0,600,600))
-            pygame.display.flip()        
-        
+        cl = csv.reader(open(levels[lev],"rU"))
         for row in cl:
             col = colony(self,window,(int(row[1]),int(row[2])),int(row[0]),row[3],int(row[4]))
             self.colony_list.add(col)
@@ -228,7 +222,15 @@ class game():
             self.ant_list.remove(a)
         for c in self.colony_list:
             self.colony_list.remove(c)
-        self.mapload(self.level)
+        if self.level < 11:
+            self.mapload(self.level)
+        else:
+            self.wingame()
+            
+    def wingame(self):
+        bg_vict = pygame.image.load(Logo["vic"])
+        window.blit(bg_vict,(0,0,600,600))
+        pygame.display.flip() 
         
 
 class colony(Sprite):
@@ -538,7 +540,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(1)
+games = game(10)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
