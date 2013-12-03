@@ -242,6 +242,7 @@ class game():
                 self.stop()
             
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
+                background.stop()
                 self.end()
                 
             if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_d):
