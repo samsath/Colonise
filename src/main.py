@@ -164,7 +164,7 @@ class game():
                 
             # font level indicator
             font = pygame.font.Font(None,27)
-            text_level = font.render("Level: " + str(self.level) + ",   Esc to Quit,  R to Restart game, D to Deselect all colony", 1, colour[0])
+            text_level = font.render("Level: " + str(self.level) + ",   Esc to Quit,  R to Restart, D to Deselect", 1, colour[0])
             window.blit(text_level,(25,5))   
             
             # Checks if there is a winner
@@ -531,7 +531,7 @@ class ants(Sprite):
     This are ant class properties which hold the computed values which are used in the update
     '''            
     @property
-    def pos(self):
+    def pos(self): 
         return self.x, self.y
 
     # for drawing, we need the position as tuple of ints
@@ -591,7 +591,11 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
+<<<<<<< HEAD
 games = game(4)
+=======
+games = game(1)
+>>>>>>> fe3a800a79ebdc40d9e2f147c3b0217d854b286f
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
@@ -608,6 +612,4 @@ while True:
         games.start()
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
         games.stop()
-    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
-        pass
-        # will be the random game mode
+
