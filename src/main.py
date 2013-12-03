@@ -422,6 +422,7 @@ class colony(Sprite):
                     self.state = True
                 else:
                     self.state = False
+        
     
     def _mouseClickLeft(self,mouspos):
         '''
@@ -517,7 +518,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(3)
+games = game(10)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
