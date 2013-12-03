@@ -43,9 +43,10 @@ colony_num = [] # this keeps track of who owns what
 #SOUNDS
 pygame.mixer.init(44100, -16, 2, 2048)
 
-win = pygame.mixer.Sound('won.wav')
+won = pygame.mixer.Sound('won.wav')
 lost = pygame.mixer.Sound('lost.wav')
 base_hit = pygame.mixer.Sound('base hit.wav')
+background = pygame.mixer.Sound('background.wav')
 base_alert = pygame.mixer.Sound('base alert.wav')
 base_regen = pygame.mixer.Sound('base regen.wav')
 base_taken = pygame.mixer.Sound('base taken.wav')
@@ -165,10 +166,14 @@ class game():
                     # you win
                     window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
                     self.state = "new"
+                    if self.state != status:
+                        won.play()
                 else:
                     # you loss
                     window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
                     self.state = "redo"
+                    if self.state != status:
+                        lost.play()
                 #new game 
             
             pygame.display.update()
@@ -213,6 +218,8 @@ class game():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:     
                 for c in self.colony_list:
                     c._mouseClickRight(pygame.mouse.get_pos())
+                    
+            status = self.state
                     
     def end(self):
         '''
@@ -561,7 +568,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(2)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
