@@ -210,9 +210,11 @@ class game():
                     self.end()
                 elif self.state =="end":
                     self.stop()        
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:     
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:    
+                click =  pygame.mouse.get_pos()
                 for c in self.colony_list:
-                    c._mouseClickRight(pygame.mouse.get_pos())
+                    c._mouseClickRight(click)
+                
                     
     def end(self):
         '''
@@ -443,6 +445,7 @@ class colony(Sprite):
                     self.state = True
                 else:
                     self.state = False
+        
         
     
     def _mouseClickLeft(self,mouspos):
