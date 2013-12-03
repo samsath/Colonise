@@ -531,7 +531,7 @@ class ants(Sprite):
     This are ant class properties which hold the computed values which are used in the update
     '''            
     @property
-    def pos(self):
+    def pos(self): else: 
         return self.x, self.y
 
     # for drawing, we need the position as tuple of ints
@@ -591,7 +591,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(10)
+games = game(1)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
@@ -608,6 +608,4 @@ while True:
         games.start()
     if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_ESCAPE):
         games.stop()
-    if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_RETURN):
-        pass
-        # will be the random game mode
+
