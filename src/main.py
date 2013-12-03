@@ -123,7 +123,7 @@ class game():
         won.stop()
         lost.stop()
         theme.stop()
-        background.play()
+        background.play(loops = -1)
         yalp = self.firstyalp
             
     def check(self,lst):
