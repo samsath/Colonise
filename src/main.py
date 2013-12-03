@@ -221,7 +221,7 @@ class game():
                 for c in self.colony_list:
                     c._mouseClickRight(click)
                 
-                    
+            status = self.state       
 
                     
     def end(self):
