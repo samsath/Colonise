@@ -28,10 +28,11 @@ levels = {1:"level1.csv",2:"level2.csv",3:"level3.csv",
           7:"level7.csv",8:"level8.csv",9:"level9.csv",
           10:"level10.csv"} # list of levels as each level will be the a seperate csv file
 
-baseimage = {0:"Colony.png",
-             1:"Colony1.png",
-             2:"Colony2.png",
-             3:"Colony3.png"} # list of the images for the different colony objects
+baseimage = {0:"Colonyn.png",
+             1:"Colonyp.png",
+             2:"Colonyb.png",
+             3:"Colonyg.png",
+             4:"Colonyy.png"} # list of the images for the different colony objects
 
 Logo= {"win":"WinScreen.png",
        "loss":"lossScreen.png",
@@ -91,7 +92,6 @@ class game():
         self.all_sprite_list = pygame.sprite.Group()
         self.state = "play" # play, new, redo exit # The state is here so that we can control the player interaction as well to restart the game
         theme.play(loops = -1)
-        self.Play = True
         
     def start(self):
         #this will be called after the splash screen goes away so the game will start
@@ -141,7 +141,7 @@ class game():
         '''
         This is the main game loop for the pygame
         '''
-        while self.Play:
+        while True:
                             
             # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate                
             self.clock.tick()
@@ -166,6 +166,34 @@ class game():
             ch = self.check(colony_num)
             if  ch > 0:
                 if ch == 1:
+
+                    # you win
+                    window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+                    self.state = "new"
+                    if self.state != status:
+                        background.stop()
+                        won.play()
+                        yalp = 1
+                    print pygame.mixer.get_busy()
+                    if pygame.mixer.get_busy() == 0:
+                        print 'mixer not busy', yalp
+                        if yalp == 1:
+                            theme.play(loops = -1)
+                            yalp = 0
+                else:
+                    # you loss
+                    window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+                    self.state = "redo"
+                    if self.state != status:
+                        background.stop()
+                        lost.play()
+                        yalp = 1
+                    if pygame.mixer.get_busy() == 0:
+                        if yalp == 1:
+                            theme.play(loops = -1)
+                            yalp = 0
+                #new game 
+
                     if self.state != "end":
                         # you win
                         window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
@@ -181,6 +209,7 @@ class game():
                             background.stop()
                             lost.play()
                     #new game 
+
             
             pygame.display.update()
             
@@ -223,12 +252,7 @@ class game():
                 for c in self.colony_list:
                     c._mouseClickRight(click)
                 
-            status = self.state 
-        
-        bg_vict = pygame.image.load(Logo["vic"])
-        window.blit(bg_vict,(0,0,600,600))
-        pygame.display.flip() 
-              
+            status = self.state       
 
                     
     def end(self):
@@ -242,11 +266,12 @@ class game():
         if self.level < 11:
             self.mapload(self.level)
         else:
-            self.state = "end"
             self.wingame()
             
     def wingame(self):
-        self.Play = False
+        bg_vict = pygame.image.load(Logo["vic"])
+        window.blit(bg_vict,(0,0,600,600))
+        pygame.display.flip() 
         
 
 class colony(Sprite):
@@ -580,7 +605,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(10)
+games = game(4)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
