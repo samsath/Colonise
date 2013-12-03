@@ -367,7 +367,7 @@ class colony(Sprite):
                         self.inhab -= 1
                         self.health += 1
                 
-                if self.me[0] = 1:      #just def 
+                if self.me[0] == 1:      #just def 
                     r = self.game.colony_list.sprites()
                     shuffle(r)
                     if self.attime > self.burst-150:
