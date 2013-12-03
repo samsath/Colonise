@@ -91,6 +91,7 @@ class game():
         self.all_sprite_list = pygame.sprite.Group()
         self.state = "play" # play, new, redo exit # The state is here so that we can control the player interaction as well to restart the game
         theme.play(loops = -1)
+        self.Play = True
         
     def start(self):
         #this will be called after the splash screen goes away so the game will start
@@ -140,7 +141,7 @@ class game():
         '''
         This is the main game loop for the pygame
         '''
-        while True:
+        while self.Play:
                             
             # this is all to do with the different time keeping so we can have the collony and ants move at a standard rate                
             self.clock.tick()
@@ -165,20 +166,21 @@ class game():
             ch = self.check(colony_num)
             if  ch > 0:
                 if ch == 1:
-                    # you win
-                    window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
-                    self.state = "new"
-                    if self.state != status:
-                        background.stop()
-                        won.play()
-                else:
-                    # you loss
-                    window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
-                    self.state = "redo"
-                    if self.state != status:
-                        background.stop()
-                        lost.play()
-                #new game 
+                    if self.state != "end":
+                        # you win
+                        window.blit(pygame.image.load(Logo["win"]).convert(), (20,200,300,300))
+                        self.state = "new"
+                        if self.state != status:
+                            background.stop()
+                            won.play()
+                    else:
+                        # you loss
+                        window.blit(pygame.image.load(Logo["loss"]).convert(), (20,200,300,300))
+                        self.state = "redo"
+                        if self.state != status:
+                            background.stop()
+                            lost.play()
+                    #new game 
             
             pygame.display.update()
             
@@ -228,7 +230,12 @@ class game():
                 for c in self.colony_list:
                     c._mouseClickRight(click)
                 
-            status = self.state       
+            status = self.state 
+        
+        bg_vict = pygame.image.load(Logo["vic"])
+        window.blit(bg_vict,(0,0,600,600))
+        pygame.display.flip() 
+              
 
                     
     def end(self):
@@ -242,12 +249,11 @@ class game():
         if self.level < 11:
             self.mapload(self.level)
         else:
+            self.state = "end"
             self.wingame()
             
     def wingame(self):
-        bg_vict = pygame.image.load(Logo["vic"])
-        window.blit(bg_vict,(0,0,600,600))
-        pygame.display.flip() 
+        self.Play = False
         
 
 class colony(Sprite):
@@ -581,7 +587,7 @@ pygame.init()
 #####Screen
 window = pygame.display.set_mode(SIZE)
 pygame.display.set_caption('Colonise','icon.png')
-games = game(1)
+games = game(10)
 bg_start = pygame.image.load("openScreen.png")
 window.blit(bg_start,(0,0,600,600))
 pygame.display.flip()
