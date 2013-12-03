@@ -173,7 +173,7 @@ class game():
                 
             # font level indicator
             font = pygame.font.Font(None,30)
-            text_level = font.render("Your Level is: " + str(self.level), 1, colour["ht"])
+            text_level = font.render("Level: " + str(self.level), 1, colour["ht"])
             window.blit(text_level,(10,10))   
                 
             pygame.display.update()
