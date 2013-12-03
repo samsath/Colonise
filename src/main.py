@@ -531,7 +531,7 @@ class ants(Sprite):
     This are ant class properties which hold the computed values which are used in the update
     '''            
     @property
-    def pos(self): else: 
+    def pos(self): 
         return self.x, self.y
 
     # for drawing, we need the position as tuple of ints
